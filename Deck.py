@@ -32,11 +32,11 @@ class Deck:
 
 def getKicker(hand):
     first_card = hand[0]
+    if first_card.value == 1:  # The plan is to get the hand ordered
+        return 14
     new_hand = hand[0:1]
     for card in new_hand:
-        if first_card.value == 1:
-            return 14
-        if card.value > first_card.value or card.value == 1:
+        if card.value > first_card.value:
             first_card = card
     return first_card.value
 
@@ -45,7 +45,7 @@ def isStaightFlush(hand):
     first_card = hand[0]
     new_hand = hand[1:]
     counter = 0
-    for card in new_hand:
+    for card in new_hand:  # The plan is to get the hand ordered
         if (card.value == first_card.value + 1 or (card.value == 1 and first_card.value == 13)) \
                 and card.suit == first_card.suit:
             first_card = card
@@ -54,6 +54,19 @@ def isStaightFlush(hand):
         else:
             break
     return counter == 5
+
+
+def isQuad(hand):
+    counter = 0
+    first_card = hand[0]
+    new_hand = hand[1:]
+    for card in new_hand:
+        if card.value == first_card:
+            counter = counter + 1
+            first_card = card
+            continue
+
+    return counter == 3
 
 
 def compare_hands(hand_one, hand_two):
@@ -70,7 +83,8 @@ def compare_hands(hand_one, hand_two):
     elif isStaightFlush(hand_two):
         return hand_two
     elif isQuad(hand_one):
-        pass
+        if isQuad(hand_two):
+            pass  # TODO
     elif isFullHouse(hand_one):
         pass
     elif isFlush(hand_one):
