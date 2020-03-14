@@ -98,4 +98,9 @@ def compare_hands(hand_one, hand_two):
     elif isPair(hand_one):
         pass
     else:  # Bigger kicker wins
-        pass
+        if getKicker(hand_one) > getKicker(hand_two):
+            return hand_one
+        elif getKicker(hand_one) < getKicker(hand_two):
+            return hand_two
+        else:
+            return list()  # Draw = empty list
