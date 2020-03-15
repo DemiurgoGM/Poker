@@ -31,14 +31,18 @@ class Deck:
 
 
 def getKicker(hand):
-    first_card = hand[0]
-    if first_card.value == 1:  # The plan is to get the hand ordered
+    if hand[0].value == 1 or hand[-1].value == 1:
         return 14
-    new_hand = hand[0:1]
+    first_card = hand[0]
+    new_hand = hand[1:]
     for card in new_hand:
         if card.value > first_card.value:
             first_card = card
     return first_card.value
+
+
+def getKickerNotRepeated(hand):  # TODO
+    pass
 
 
 def isStaightFlush(hand):
@@ -53,7 +57,7 @@ def isStaightFlush(hand):
             continue
         else:
             break
-    return counter == 5
+    return counter == 4
 
 
 def isQuad(hand):
@@ -61,12 +65,35 @@ def isQuad(hand):
     first_card = hand[0]
     new_hand = hand[1:]
     for card in new_hand:
-        if card.value == first_card:
+        if card.value == first_card.value:
             counter = counter + 1
-            first_card = card
             continue
 
     return counter == 3
+
+
+def isFullHouse(hand):
+    pass
+
+
+def isFlush(hand_one):
+    pass
+
+
+def isStraight(hand_one):
+    pass
+
+
+def isThreeEquals(hand_one):
+    pass
+
+
+def isTwoPair(hand_one):
+    pass
+
+
+def isPair(hand_one):
+    pass
 
 
 def compare_hands(hand_one, hand_two):
@@ -84,7 +111,14 @@ def compare_hands(hand_one, hand_two):
         return hand_two
     elif isQuad(hand_one):
         if isQuad(hand_two):
-            pass  # TODO
+            if getKickerNotRepeated(hand_one) > getKickerNotRepeated(hand_two):
+                return hand_one
+            elif getKickerNotRepeated(hand_two) > getKickerNotRepeated(hand_one):
+                return hand_two
+            else:
+                return list()
+    elif isQuad(hand_two):
+        return hand_two
     elif isFullHouse(hand_one):
         pass
     elif isFlush(hand_one):
