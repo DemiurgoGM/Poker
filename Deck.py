@@ -34,22 +34,16 @@ def getKicker(hand):
     if hand[0].value == 1 or hand[-1].value == 1:
         return 14
     first_card = hand[0]
-    new_hand = hand[1:]
-    for card in new_hand:
+    for card in hand[1:]:
         if card.value > first_card.value:
             first_card = card
     return first_card.value
 
 
-def getKickerNotRepeated(hand):  # TODO
-    pass
-
-
 def isStaightFlush(hand):
     first_card = hand[0]
-    new_hand = hand[1:]
     counter = 0
-    for card in new_hand:  # The plan is to get the hand ordered
+    for card in hand[1:]:  # The plan is to get the hand ordered
         if (card.value == first_card.value + 1 or (card.value == 1 and first_card.value == 13)) \
                 and card.suit == first_card.suit:
             first_card = card
@@ -63,8 +57,7 @@ def isStaightFlush(hand):
 def isQuad(hand):
     counter = 0
     first_card = hand[0]
-    new_hand = hand[1:]
-    for card in new_hand:
+    for card in hand[1:]:
         if card.value == first_card.value:
             counter = counter + 1
             continue
@@ -72,12 +65,70 @@ def isQuad(hand):
     return counter == 3
 
 
+def getQuadKicker(hand):
+    if isQuad(hand):
+        value = hand[-1].value
+        if value == 1:
+            return 14
+        else:
+            return value
+    else:
+        return -1
+
+
+def getQuadCard(hand):
+    if isQuad(hand):
+        value = hand[0].value
+        if value == 1:
+            return 14
+        else:
+            return value
+    else:
+        return -1
+
+
 def isFullHouse(hand):
-    pass
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    return cards_value.count(cards_value[0]) == 3 and cards_value.count(cards_value[-1]) == 2
 
 
-def isFlush(hand_one):
-    pass
+def getFullHouseThreeCard(hand):
+    if isFullHouse(hand):
+        value = hand[0].value
+        if value == 1:
+            return 14
+        else:
+            return value
+    else:
+        return -1
+
+
+def getFullHouseTwoCard(hand):
+    if isFullHouse(hand):
+        value = hand[-1].value
+        if value == 1:
+            return 14
+        else:
+            return value
+    else:
+        return -1
+
+
+def isFlush(hand):
+    counter = 0
+    first_card = hand[0]
+    for card in hand[1:]:
+        if card.suit == first_card.suit:
+            counter = counter + 1
+        else:
+            break
+    return counter == 4
+
+
+hand = (Card(1, 'a'), Card(2, 'a'), Card(3, 'a'), Card(4, 'a'), Card(5, 'a'))
+print(isFlush(hand))
 
 
 def isStraight(hand_one):
@@ -109,14 +160,21 @@ def compare_hands(hand_one, hand_two):
             return hand_one
     elif isStaightFlush(hand_two):
         return hand_two
-    elif isQuad(hand_one):
-        if isQuad(hand_two):
-            if getKickerNotRepeated(hand_one) > getKickerNotRepeated(hand_two):
+    elif isQuad(hand_one):  # if quad
+        if isQuad(hand_two):  # if 2 quads
+            if getQuadCard(hand_one) == getQuadCard(hand_two):  # if same quad
+                if getQuadKicker(hand_one) > getQuadKicker(hand_two):
+                    return hand_one
+                elif getQuadKicker(hand_two) > getQuadKicker(hand_one):
+                    return hand_two
+                else:
+                    return list()
+            elif getQuadCard(hand_one) > getQuadCard(hand_two):
                 return hand_one
-            elif getKickerNotRepeated(hand_two) > getKickerNotRepeated(hand_one):
-                return hand_two
             else:
-                return list()
+                return hand_two
+        else:
+            return hand_one
     elif isQuad(hand_two):
         return hand_two
     elif isFullHouse(hand_one):
