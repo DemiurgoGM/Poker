@@ -127,12 +127,16 @@ def isFlush(hand):
     return counter == 4
 
 
-hand = (Card(1, 'a'), Card(2, 'a'), Card(3, 'a'), Card(4, 'a'), Card(5, 'a'))
-print(isFlush(hand))
-
-
-def isStraight(hand_one):
-    pass
+def isStraight(hand):
+    first_card = hand[0]
+    counter = 0
+    for card in hand[1:]:  # The plan is to get the hand ordered
+        if card.value == first_card.value + 1 or (card.value == 1 and first_card.value == 13):
+            first_card = card
+            counter = counter + 1
+        else:
+            break
+    return counter == 4
 
 
 def isThreeEquals(hand_one):
@@ -196,3 +200,7 @@ def compare_hands(hand_one, hand_two):
             return hand_two
         else:
             return list()  # Draw = empty list
+
+
+# hand = (Card(5, 'a'), Card(3, 'a'), Card(7, 'a'), Card(8, 'a'), Card(9, 'a'))
+# print(isStraight(hand))
