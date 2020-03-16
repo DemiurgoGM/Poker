@@ -1,0 +1,27 @@
+#bodydiv {
+    width: 50%;
+    overflow: hidden;
+    background: lightgrey;
+    padding-left: 25px;
+    font-family: "Droid Serif", "DejaVu Serif", "STIX", serif;
+    align-items: center;
+    align-self: center;
+    alignment: center;
+    align-content: center;
+}
+
+
+/*#myHeader {*/
+/*    background-color: lightskyblue;*/
+/*    color: black;*/
+/*    padding: 100px;*/
+/*    text-align: center;*/
+/*}*/
+/*p {*/
+/*    display: block;*/
+/*    text-align: center;*/
+/*    padding: 20px;*/
+/*    font-size: 1.5vw;*/
+/*    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;*/
+
+/*}*/
