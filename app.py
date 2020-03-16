@@ -8,5 +8,10 @@ def hello_world():
     return render_template('default.html')
 
 
+@app.route('/PlayPoker.html')
+def play_poker():
+    return render_template('PlayPoker.html')
+
+
 if __name__ == '__main__':
     app.run()
