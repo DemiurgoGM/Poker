@@ -9,8 +9,16 @@
 
     <body>
         <div id="bodydivh1">
-            <h1><i>Poker Game</i></h1>
-            <a href="PlayPoker.html">Play Poker</a>
+            <h1><a href=""><i>Poker Game</i></a></h1>
+             <form action="PlayPoker.html" method="get" id="formDefault">
+                 <fieldset id="fieldsetDefault">
+                     <label for="username"><b>Username: </b></label>
+                     <input type="text" placeholder="Name" id="username" name="user"><br><br>
+                     <label for="value"><b>Quantity: </b></label>
+                     <input type="number" id="value" max="10000" min="1000" value="5000" name="value"><br><br>
+                     <input type="submit" value="Play Poker">
+                 </fieldset>
+             </form>
         </div>
     </body>
 </html>

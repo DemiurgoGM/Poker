@@ -1,13 +1,30 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+    background: #355C7D;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #C06C84, #6C5B7B, #355C7D);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #C06C84, #6C5B7B, #355C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
 #bodydivh1 {
     width: 50%;
-    overflow: hidden;
-    background: lightgrey;
     padding-left: 25px;
     font-family: "Droid Serif", "DejaVu Serif", "STIX", serif;
     margin: 0 auto;
     text-align: center;
+
 }
 
+h1 {
+    padding: 30px;
+}
 
 a {
     color: black;
@@ -17,5 +34,27 @@ a {
 a:hover{
     color: blue;
     text-decoration: underline;
+}
+
+#fieldsetDefault {
+    width: 33%;
+    padding-right: 25px;
+    align-self: center;
+    alignment: center;
+    align-content: center;
+    margin: 33% auto;
+}
+
+#username, #value {
+    width: 15vh;
+}
+
+#username {
+    margin-top: 1vw;
+}
+
+label {
+    margin-top: 1vw;
+    width: 12vh;
 }
 
