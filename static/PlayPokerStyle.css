@@ -1,0 +1,35 @@
+body {
+    background: black;
+}
+
+#PlayPokerLeftDiv {
+    width: 25%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding-right: 20px;
+}
+
+h1 {
+    font-size: 3vw;
+    font-style: italic;
+    width: max-content;
+}
+
+
+a, h2 {
+    color: white;
+    text-decoration: none;
+}
+
+a {
+    display: inline-block;
+    width: min-content;
+    height: min-content;
+}
+
+a:hover {
+    color: whitesmoke;
+    text-decoration: underline;
+    font-style: oblique;
+}

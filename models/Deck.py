@@ -1,4 +1,7 @@
 class Card:
+    value = 0
+    suit = ''
+
     def __init__(self, card_value, suit):
         self.value = card_value
         self.suit = suit
@@ -17,8 +20,9 @@ class Card:
 
 
 class Deck:
+    cards_list = list()
+
     def __init__(self):
-        self.cards_list = list()
         for value in range(1, 14):
             for suit in ('diamonds', 'clubs', 'hearts', 'spades'):
                 self.cards_list.append(Card(value, suit))
@@ -406,7 +410,6 @@ def compare_hands(hand_one, hand_two):
             elif second_hand_cards[i] > first_hand_cards[i]:
                 return hand_two
         return list()
-
 
 # hand = (Card(1, 'a'), Card(2, 'a'), Card(13, 'a'), Card(2, 'a'), Card(3, 'a'))
 # print(getNotRepeatedHand(hand))
