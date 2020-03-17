@@ -2,9 +2,10 @@
 
 <html lang="en">
     <head>
-        <title>Play Poker</title>
+        <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
+        <link rel="import" href="../models/Deck.py">
     </head>
 
     <body>
@@ -12,6 +13,15 @@
             <a href="/"><h1>Poker Game</h1></a><br><br>
             <h2>Hi {{ username }}! </h2><br>
             <h2>You're going to play with ${{ value }}.</h2>
+        </div>
+        <div id="PlayPokerMidDiv">
+            <fieldset id="MidFieldSet">
+            </fieldset>
+        </div>
+        <div id="PlayPokerRightDiv">
+            <h2>
+                Information about the game:
+            </h2>
         </div>
     </body>
 </html>

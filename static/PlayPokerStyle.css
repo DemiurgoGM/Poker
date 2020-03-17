@@ -1,13 +1,38 @@
+html, body, #PlayPokerLeftDiv, #PlayPokerMidDiv, #PlayPokerRightDiv {
+    height: 100%;
+}
+
 body {
-    background: black;
+    /*background: black;*/
+    background: #355C7D;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #C06C84, #6C5B7B, #355C7D);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #C06C84, #6C5B7B, #355C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 #PlayPokerLeftDiv {
     width: 25%;
-    height: 100%;
+    margin: 0 2vw 0 0;
+    overflow: hidden;
+    float: left;
+}
+
+#PlayPokerMidDiv {
+    width: 45%;
+    overflow: hidden;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+#PlayPokerRightDiv {
+    width: 25%;
+    float: right;
     margin: 0;
     overflow: hidden;
-    padding-right: 20px;
+    padding-left: 5px;
+}
+
+#MidFieldSet {
+    border-width: 1vh;
 }
 
 h1 {
