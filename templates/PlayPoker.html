@@ -5,14 +5,20 @@
         <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
-        <link rel="import" href="../models/Deck.py">
+{#        <link rel="import" href="../models/Deck.py">#}
     </head>
 
     <body>
+    <var>Blind = 2</var>
         <div id="PlayPokerLeftDiv">
             <a href="/"><h1>Poker Game</h1></a><br><br>
             <h2>Hi {{ username }}! </h2><br>
-            <h2>You're going to play with ${{ value }}.</h2>
+            <h2>You're going to play with ${{ value }}.</h2><br><br>
+            <form action="PlayPoker.html" method="get">
+                <input type="hidden" value="{{ username }}" name="user">
+                <input type="hidden" value="{{ value }}" name="value">
+                <input type="submit" value="Fold" id="FoldButton">
+            </form>
         </div>
         <div id="PlayPokerMidDiv">
             <fieldset id="MidFieldSet">
@@ -22,6 +28,9 @@
             <h2>
                 Information about the game:
             </h2>
+            <h3>
+                {{ Blind }} = 2
+            </h3>
         </div>
     </body>
 </html>
