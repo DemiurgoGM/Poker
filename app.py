@@ -15,16 +15,26 @@ def hello_world():
 
 @app.route('/PlayPoker.html')
 def play_poker():
-    deck = Deck()
-    for _ in range(0, 7):
-        random.shuffle(deck.cards_list)
     if request.args.get('phase') is None:
+        deck = Deck()
+        for _ in range(0, 7):
+            random.shuffle(deck.cards_list)
         user = request.args
         player = Player(user['user'], user['value'])
         return render_template('PlayPoker.html',
-                               username=player.user, value=player.money, deck=deck)
+                               username=player.user, value=player.money, deck=deck,
+                               blind=2, phase='start', text='', round=1)
+    elif request.args.get('phase') == 'start':
+        user = request.args  # expected args: user/value/phase/text/deck/blind/round
+        player = Player(user['user'], user['value'])
+        deck = Deck()
+        for _ in range(0, 7):
+            random.shuffle(deck.cards_list)
+        blind = user['blind'] if int(user['round']) % 10 != 0 else int(user['blind']) + 2
+        return render_template('PlayPoker.html', username=player.user, value=player.money, deck=deck,
+                               blind=blind, round=int(user['round'])+1,
+                               phase='start', text='')
     else:
-        user = request.args  # expected args: user/value/phase/text/
         pass
 
 
