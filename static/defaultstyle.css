@@ -26,13 +26,13 @@ h1 {
     padding: 30px;
 }
 
-a {
-    color: black;
+a, label {
+    color: white;
     text-decoration: none;
 }
 
 a:hover{
-    color: blue;
+    color: floralwhite;
     text-decoration: underline;
 }
 

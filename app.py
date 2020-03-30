@@ -23,19 +23,19 @@ def play_poker():
         player = Player(user['user'], user['value'])
         return render_template('PlayPoker.html',
                                username=player.user, value=player.money, deck=deck,
-                               blind=2, phase='start', text='', round=1)
+                               blind=100.0, phase='start', text='', round=1)
     elif request.args.get('phase') == 'start':
         user = request.args  # expected args: user/value/phase/text/deck/blind/round
         player = Player(user['user'], user['value'])
         deck = Deck()
         for _ in range(0, 7):
             random.shuffle(deck.cards_list)
-        blind = user['blind'] if int(user['round']) % 10 != 0 else int(user['blind']) + 2
+        blind = float(user['blind']) if int(user['round']) % 10 != 0 else float(user['blind']) + 100.0
         return render_template('PlayPoker.html', username=player.user, value=player.money, deck=deck,
                                blind=blind, round=int(user['round'])+1,
                                phase='start', text='')
     else:
-        pass
+        return "Else statement"  # TODO
 
 
 if __name__ == '__main__':

@@ -5,15 +5,22 @@
         <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
-{#        <link rel="import" href="../models/Deck.py">#}
     </head>
 
     <body>
+        <div id="PlayPokerRightDiv">
+            <h2>
+                Information about the game:
+            </h2>
+            <h4>
+                Blinds = {{ blind }}
+            </h4>
+        </div>
         <div id="PlayPokerLeftDiv">
             <a href="/"><h1>Poker Game</h1></a><br><br>
             <h2>Hi {{ username }}! </h2><br>
             <h2>You're going to play with $ {{ value }}.</h2><br><br>
-            <form action="PlayPoker.html" method="get">
+            <form action="PlayPoker.html" method="get" id="FoldForm">
                 <input type="hidden" value="{{ username }}" name="user">
                 <input type="hidden" value="{{ value }}" name="value">
                 <input type="hidden" value="{{ round }}" name="round">
@@ -22,18 +29,35 @@
                 <input type="hidden" value="" name="text">
                 <input type="submit" value="Fold" id="FoldButton">
             </form>
+            <div id="sliderBet">
+                <label id="BetLabel" for="BettingRange">Bet: </label>
+                <input type="range" id="BettingRange" min="{{ blind * 0.25 }}" max="{{ blind * 2 }}" value="{{ blind }}" step="0.05">
+                <label for="BettingValue"></label>
+                <input type="number" id="BettingValue" max="{{ value }}" min="{{ blind }}" value="{{ blind * 2 }}">
+            </div>
+            <script>
+                const slider = document.getElementById("BettingRange");
+                const output = document.getElementById("BettingValue");
+                output.textContent = slider.value.toString();
+                slider.oninput = function() {
+                    output.textContent = this.value;
+                }
+            </script>
         </div>
         <div id="PlayPokerMidDiv">
             <fieldset id="MidFieldSet">
+{#                <script>#}
+{#                    if(true){ // if it's the start of the game#}
+{##}
+{#                    } else if(true) { // if it's the flop#}
+{##}
+{#                    } else if(true) { // if it's the turn#}
+{##}
+{#                    } else if(true) { // if it's the river#}
+{##}
+{#                    }#}
+{#                </script>#}
             </fieldset>
-        </div>
-        <div id="PlayPokerRightDiv">
-            <h2>
-                Information about the game:
-            </h2>
-            <h3>
-                Blinds = {{ blind }}
-            </h3>
         </div>
     </body>
 </html>
