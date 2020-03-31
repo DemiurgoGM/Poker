@@ -5,6 +5,7 @@
         <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
+{#        <script type="module" src="../models/PlayPokerScripts.js"></script>#}
     </head>
 
     <body>
@@ -36,16 +37,9 @@
                 <input type="number" id="BettingValue" max="{{ value }}" min="{{ blind }}" value="{{ blind * 2 }}" >
 {#                onkeypressed="betpressed(event)#}
             </div>
-            <script>
-                const slider = document.getElementById("BettingRange");
-                const output = document.getElementById("BettingValue");
-                output.value = slider.value.toString();
-                slider.oninput = function() {
-                    output.value = this.value;
-                };
-
-                {#function betpressed(e) {#}
-                {#    window.alert("botao pressionado")#}
+            <script type="module">
+                import { slider_numberbox } from "../models/PlayPokerScripts";
+                slider_numberbox();
             </script>
         </div>
         <div id="PlayPokerMidDiv">
