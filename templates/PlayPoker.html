@@ -33,15 +33,19 @@
                 <label id="BetLabel" for="BettingRange">Bet: </label>
                 <input type="range" id="BettingRange" min="{{ blind * 0.25 }}" max="{{ blind * 2 }}" value="{{ blind }}" step="0.05">
                 <label for="BettingValue"></label>
-                <input type="number" id="BettingValue" max="{{ value }}" min="{{ blind }}" value="{{ blind * 2 }}">
+                <input type="number" id="BettingValue" max="{{ value }}" min="{{ blind }}" value="{{ blind * 2 }}" >
+{#                onkeypressed="betpressed(event)#}
             </div>
             <script>
                 const slider = document.getElementById("BettingRange");
                 const output = document.getElementById("BettingValue");
-                output.textContent = slider.value.toString();
+                output.value = slider.value.toString();
                 slider.oninput = function() {
-                    output.textContent = this.value;
-                }
+                    output.value = this.value;
+                };
+
+                {#function betpressed(e) {#}
+                {#    window.alert("botao pressionado")#}
             </script>
         </div>
         <div id="PlayPokerMidDiv">
