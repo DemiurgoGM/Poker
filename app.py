@@ -20,18 +20,18 @@ def play_poker():
         for _ in range(0, 7):
             random.shuffle(deck.cards_list)
         user = request.args
-        player = Player(user['user'], user['value'])
+        player = Player(user['user'], user['money'])
         return render_template('PlayPoker.html',
-                               username=player.user, value=player.money, deck=deck,
+                               username=player.user, money=player.money, deck=deck,
                                blind=100.0, phase='start', text='', round=1)
     elif request.args.get('phase') == 'start':
         user = request.args  # expected args: user/value/phase/text/deck/blind/round
-        player = Player(user['user'], user['value'])
+        player = Player(user['user'], user['money'])
         deck = Deck()
         for _ in range(0, 7):
             random.shuffle(deck.cards_list)
         blind = float(user['blind']) if int(user['round']) % 10 != 0 else float(user['blind']) + 100.0
-        return render_template('PlayPoker.html', username=player.user, value=player.money, deck=deck,
+        return render_template('PlayPoker.html', username=player.user, money=player.money, deck=deck,
                                blind=blind, round=int(user['round'])+1,
                                phase='start', text='')
     else:
