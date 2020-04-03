@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
         <script type="module" src="../static/PlayPokerSliderScript.js"></script>
+        <script type="module" src="../static/PlayPokerBetFunction.js"></script>
     </head>
 
     <body>
@@ -32,26 +33,17 @@
             </form>
             <div id="sliderBet">
                 <label id="BetLabel" for="BettingRange">Bet: </label>
-                <input type="range" id="BettingRange" min="{{ blind * 0.25 }}" max="{{ blind * 2 }}" value="{{ blind }}">
+                <input type="range" id="BettingRange" min="{{ blind }}" max="{{ money }}" value="{{ blind * 2 }}">
                 <label for="BettingValue"></label>
-                <input type="number" id="BettingValue" max="{{ money }}" min="{{ blind }}" value="{{ blind * 2 }}" >
-{#                onkeypressed="betpressed(event)#}
+                <input type="number" id="BettingValue" max="{{ money }}" min="{{ blind }}" value="{{ blind * 2 }}" ><br>
+                <input type="submit" id="BettingSubmit" value="Bet">
             </div>
         </div>
         <div id="PlayPokerMidDiv">
             <fieldset id="MidFieldSet">
-{#                <script>#}
-{#                    if(true){ // if it's the start of the game#}
-{##}
-{#                    } else if(true) { // if it's the flop#}
-{##}
-{#                    } else if(true) { // if it's the turn#}
-{##}
-{#                    } else if(true) { // if it's the river#}
-{##}
-{#                    }#}
-{#                </script>#}
+
             </fieldset>
         </div>
+        <script type="module" src="../static/PlayPokerFieldSetScript.js"></script>
     </body>
 </html>

@@ -73,20 +73,21 @@ a:hover {
 }
 
 #BettingRange {
-
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 #BettingRange:hover {
     cursor: pointer;
 }
 
-#FoldButton {
+#FoldButton, #BettingSubmit {
     height: 20px;
     width: 60px;
     margin-left: 1.5vw;
 }
 
-#FoldButton:hover {
+#FoldButton:hover, #BettingSubmit:hover {
     cursor: pointer;
     height: 25px;
     width: 65px;

@@ -1,10 +1,15 @@
 
 const slider = document.getElementById("BettingRange");
-const output = document.getElementById("BettingValue");
-output.value = slider.value.toString();
+const numberBox = document.getElementById("BettingValue");
+numberBox.value = slider.value.toString();
 slider.oninput = function() {
-    output.value = this.value;
+    numberBox.value = this.value;
 };
+
+numberBox.oninput = function() {
+    slider.value = this.value;
+};
+
 //
 // {#function betpressed(e) {#}
 // {#    window.alert("botao pressionado")#}
