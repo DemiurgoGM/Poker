@@ -86,11 +86,6 @@ input, #username {
     margin-left: 2.4em;
 }
 
-#passwordsignin {
+#passwordsignin, #confirmpasswordsignin {
     margin-left: 0.5em;
 }
-
-#confirmpasswordsignin {
-    margin-left: 0.5em;
-}
-
