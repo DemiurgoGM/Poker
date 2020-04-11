@@ -15,7 +15,6 @@ body {
 
 #bodydivh1 {
     width: 50%;
-    padding-left: 25px;
     font-family: "Droid Serif", "DejaVu Serif", "STIX", serif;
     text-align: left;
     margin: 0 auto;
@@ -28,19 +27,19 @@ h1 {
     text-align: center;
 }
 
-a, label, legend {
+a, label, legend, #confirmB {
     color: white;
     text-decoration: none;
 }
 
-label {
-    margin-left: 15vw;
+label, #confirmB {
+    margin-left: 13.5em;
 }
 
 legend {
     font-style: italic;
     text-align: left;
-    text-indent: 30px;
+    text-indent: 4vh;
 }
 
 a:hover{
@@ -49,7 +48,7 @@ a:hover{
 }
 
 fieldset {
-    margin-bottom: 10px;
+    margin-bottom: 3vw;
 }
 
 #fieldsetDefaultLogin {
@@ -60,7 +59,7 @@ fieldset {
     width: 15vh;
 }
 
-#username {
+#username, #usernameSignin {
     margin-top: 1vw;
 }
 
@@ -76,6 +75,7 @@ input, #username {
 #signinsubmit, #loginsubmit {
     margin-left: 18vw;
     width: 10vw;
+    margin-bottom: 1vw;
 }
 
 #moneylogin {
@@ -87,6 +87,10 @@ input, #username {
 }
 
 #passwordsignin {
+    margin-left: 0.5em;
+}
+
+#confirmpasswordsignin {
     margin-left: 0.5em;
 }
 
