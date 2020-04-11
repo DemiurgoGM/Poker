@@ -36,6 +36,16 @@ label, #confirmB {
     margin-left: 13.5em;
 }
 
+
+label {
+    margin-top: 1vw;
+    width: 12vh;
+}
+
+input, #username {
+    width: 14vw;
+}
+
 legend {
     font-style: italic;
     text-align: left;
@@ -55,25 +65,12 @@ fieldset {
     margin-bottom: 5vw;
 }
 
-#username, #value {
-    width: 15vh;
-}
-
 #username, #usernameSignin {
     margin-top: 1vw;
 }
 
-label {
-    margin-top: 1vw;
-    width: 12vh;
-}
-
-input, #username {
-    width: 14vw;
-}
-
 #signinsubmit, #loginsubmit {
-    margin-left: 18vw;
+    margin-left: 18.5vw;
     width: 10vw;
     margin-bottom: 1vw;
 }
