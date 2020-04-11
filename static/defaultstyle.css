@@ -17,18 +17,30 @@ body {
     width: 50%;
     padding-left: 25px;
     font-family: "Droid Serif", "DejaVu Serif", "STIX", serif;
+    text-align: left;
     margin: 0 auto;
-    text-align: center;
-
 }
 
 h1 {
-    padding: 30px;
+    padding-bottom: 2vw;
+    padding-top: 2vw;
+    padding-right: 2vw;
+    text-align: center;
 }
 
-a, label {
+a, label, legend {
     color: white;
     text-decoration: none;
+}
+
+label {
+    margin-left: 15vw;
+}
+
+legend {
+    font-style: italic;
+    text-align: left;
+    text-indent: 30px;
 }
 
 a:hover{
@@ -36,13 +48,12 @@ a:hover{
     text-decoration: underline;
 }
 
-#fieldsetDefault {
-    width: 33%;
-    padding-right: 25px;
-    align-self: center;
-    alignment: center;
-    align-content: center;
-    margin: 33% auto;
+fieldset {
+    margin-bottom: 10px;
+}
+
+#fieldsetDefaultLogin {
+    margin-bottom: 5vw;
 }
 
 #username, #value {
@@ -56,5 +67,26 @@ a:hover{
 label {
     margin-top: 1vw;
     width: 12vh;
+}
+
+input, #username {
+    width: 14vw;
+}
+
+#signinsubmit, #loginsubmit {
+    margin-left: 18vw;
+    width: 10vw;
+}
+
+#moneylogin {
+    margin-left: 1em;
+}
+
+#Emailsignin {
+    margin-left: 2.4em;
+}
+
+#passwordsignin {
+    margin-left: 0.5em;
 }
 

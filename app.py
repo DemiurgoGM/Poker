@@ -8,8 +8,9 @@ from models.Player import Player
 app = Flask(__name__)
 
 
+@app.route('/home')
 @app.route('/')
-def hello_world():
+def homepage():
     return render_template('default.html')
 
 

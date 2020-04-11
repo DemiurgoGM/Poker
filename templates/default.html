@@ -10,15 +10,34 @@
     <body>
         <div id="bodydivh1">
             <h1><a href=""><i>Poker Game</i></a></h1>
-             <form action="PlayPoker.html" method="get" id="formDefault">
-                 <fieldset id="fieldsetDefault">
+             <form action="PlayPoker.html" method="get" id="formDefaultLogin">
+                 <fieldset id="fieldsetDefaultLogin">
+                     <legend>Log In</legend>
                      <label for="username"><b>Username: </b></label>
-                     <input type="text" placeholder="Name" id="username" name="user" required><br><br>
+                     <input type="text" placeholder="Name" id="username" name="user" required minlength="3" maxlength="16" autofocus>
+                     <br><br>
                      <label for="value"><b>Quantity: </b></label>
-                     <input type="number" id="money" max="10000" min="1000" value="5000" name="money"><br><br>
-                     <input type="submit" value="Play Poker">
+                     <input type="number" id="moneylogin" max="10000" min="1000" value="5000" name="money" required>
+                     <br><br>
+                     <input type="submit" value="Play Poker" id="loginsubmit">
                  </fieldset>
              </form>
+            <form action="" method="post" id="formDefaultSignin">
+                <fieldset id="fieldsetDefaultSignin">
+                    <legend>Sign In</legend>
+                    <label for="usernameSignin"><b>Username: </b></label>
+                    <input type="text" placeholder="Name" id="usernameSignin" name="user" required minlength="3" maxlength="16">
+                    <br><br>
+                    <input type="hidden" value="1000000" name="money">
+                    <label for="Emailsignin"><b>E-mail: </b></label>
+                    <input type="email" required placeholder="E-mail" maxlength="128" id="Emailsignin" name="EmailSignin">
+                    <br><br>
+                    <label for="passwordsignin"><b>Password: </b></label>
+                    <input type="password" required maxlength="32" minlength="6" id="passwordsignin" name="password" placeholder="Password">
+                    <br><br>
+                    <input type="submit" value="Sign In" id="signinsubmit">
+                </fieldset>
+            </form>
         </div>
     </body>
 </html>
