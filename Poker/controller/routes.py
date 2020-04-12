@@ -1,10 +1,12 @@
 from random import shuffle
 
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
+from flask_login import login_user, current_user, logout_user
 
-from Poker.controller import app
+from Poker.controller import app, db, bcrypt
 from Poker.models.Deck import Deck
 from Poker.models.Player import Player
+from Poker.models.dbModel import User
 
 
 @app.route('/home', methods=['GET', 'POST'])
@@ -12,30 +14,58 @@ from Poker.models.Player import Player
 def homepage():
     user = request.form
     if user:
-        print(user)  # TODO
+        hash_password = bcrypt.generate_password_hash(user.get('password')).decode('utf-8')
+        if User.query.filter_by(username=user.get('user')).first():
+            return render_template('default.html', message='Username already taken. Please choose another one.')
+        elif User.query.filter_by(email=user.get('EmailSignin')).first():
+            return render_template('default.html', message='E-mail already taken. Please choose another one.')
+        new_user = User(
+            username=user.get('user'), email=user.get('EmailSignin'), password=hash_password, savings=user.get('money'))
+        db.session.add(new_user)
+        db.session.commit()
+        return render_template('default.html', success=True)
+    if request.args:
+        return render_template('default.html', message=request.args.get('message'))
     return render_template('default.html')
 
 
 @app.route('/PlayPoker', methods=['GET', 'POST'])
 def play_poker():
-    if request.args.get('phase') is None:
+    if request.form:
+        form = request.form  # expected args: (user/money/)phase/text/deck/blind/round
+        if current_user.is_authenticated:
+            return Play_Poker_Form_work(form)
+        else:
+            user = User.query.filter_by(username=form.get('user')).first()
+            if user and bcrypt.check_password_hash(user.password, form.get('password')):
+                login_user(user, remember=False)
+                return Play_Poker_Form_work(form)
+            else:
+                return redirect(url_for('homepage', message='Something went wrong, check your login and try again.'))
+    else:
+        return redirect(url_for('homepage', message='Something went wrong, please try again.'))
+
+
+def Play_Poker_Form_work(form):
+    if form.get('phase') is None or form.get('phase') == 'start':
         deck = Deck()
-        for _ in range(0, 7):
+        for _ in range(7):
             shuffle(deck.cards_list)
-        user = request.args
-        player = Player(user['user'], user['money'])
+        player = Player(form.get('user'), form.get('money'))
+        if form.get('blind') is not None:
+            blind = int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
+        else:
+            blind = 100
         return render_template('PlayPoker.html',
-                               username=player.user, money=player.money, deck=deck,
-                               blind=100, phase='start', text='', round=1)
-    elif request.args.get('phase') == 'start':
-        user = request.args  # expected args: user/value/phase/text/deck/blind/round
-        player = Player(user['user'], user['money'])
-        deck = Deck()
-        for _ in range(0, 7):
-            shuffle(deck.cards_list)
-        blind = int(user['blind']) if int(user['round']) % 10 != 0 else int(user['blind']) + 100
-        return render_template('PlayPoker.html', username=player.user, money=player.money, deck=deck,
-                               blind=blind, round=int(user['round']) + 1,
+                               player=player, deck=deck,
+                               blind=blind, round=int(form.get('round')) + 1,
                                phase='start', text='')
     else:
-        return "Else statement"  # TODO
+        # TODO
+        return redirect(url_for('homepage', message='TODO'))
+
+
+@app.route('/logOut')
+def logouttoHomePage():
+    logout_user()
+    return redirect(url_for('homepage'))

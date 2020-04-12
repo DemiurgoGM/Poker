@@ -11,15 +11,21 @@
     <body>
         <div id="bodydivh1">
             <h1><a href="{{ url_for('homepage') }}"><i>Poker Game</i></a></h1>
-             <form action="{{ url_for('play_poker') }}" method="get" id="formDefaultLogin">
+             <form action="{{ url_for('play_poker') }}" method="post" id="formDefaultLogin">
                  <fieldset id="fieldsetDefaultLogin">
                      <legend>Log In</legend>
                      <label for="username"><b>Username: </b></label>
                      <input type="text" placeholder="Name" id="username" name="user" required minlength="3" maxlength="16" autofocus>
                      <br><br>
-                     <label for="value"><b>Quantity: </b></label>
+                     <label for="PasswordLogin"><b>Password: </b></label>
+                     <input type="password" placeholder="Password" id="PasswordLogin" name="password" required maxlength="32" minlength="6">
+                     <br><br>
+                     <label for="moneylogin"><b>Quantity: </b></label>
                      <input type="number" id="moneylogin" max="10000" min="1000" value="5000" name="money" required>
                      <br><br>
+                     <input type="hidden" value="start" name="phase">
+                     <input type="hidden" value="0" name="round">
+                     <input type="hidden" value="0" name="blind">
                      <input type="submit" value="Play Poker!" id="loginsubmit">
                  </fieldset>
              </form>
@@ -45,5 +51,18 @@
                 </fieldset>
             </form>
         </div>
+        {% if success %}
+            <script>
+                window.onload = function() {
+                    window.alert('Account created successfully!');
+                }
+            </script>
+        {% elif message %}
+            <script>
+                window.onload = function() {
+                    window.alert({{ message | tojson | string }});
+                }
+            </script>
+        {% endif %}
     </body>
 </html>

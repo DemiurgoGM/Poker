@@ -6,7 +6,6 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
         <script type="module" src="../static/PlayPokerSliderScript.js"></script>
-        <script type="module" src="../static/PlayPokerBetFunction.js"></script>
     </head>
 
     <body>
@@ -16,27 +15,36 @@
             </h2>
             <h4>
                 Blinds = {{ blind }}
+                <br>
+                Current Round = {{ round }}
             </h4>
         </div>
         <div id="PlayPokerLeftDiv">
-            <a href="/"><h1>Poker Game</h1></a><br><br>
-            <h2>Hi {{ username }}! </h2><br>
-            <h2>You're going to play with $ {{ money }}.</h2><br><br>
-            <form action="{{ url_for('play_poker') }}" method="get" id="FoldForm">
-                <input type="hidden" value="{{ username }}" name="user">
-                <input type="hidden" value="{{ money }}" name="money">
+            <a href="{{ url_for('logouttoHomePage') }}"><h1>Poker Game</h1></a><br><br>
+            <h2>Hi {{ player.user }}! </h2><br>
+            <h2>You're going to play with $ {{ player.money | int }}.</h2><br><br>
+            <form action="{{ url_for('play_poker') }}" method="post" id="FoldForm">
+                <input type="hidden" value="{{ player.user }}" name="user">
+                <input type="hidden" value="{{ player.money | int }}" name="money">
                 <input type="hidden" value="{{ round }}" name="round">
                 <input type="hidden" value="start" name="phase">
                 <input type="hidden" value="{{ blind }}" name="blind">
-                <input type="hidden" value="" name="text">
                 <input type="submit" value="Fold" id="FoldButton">
             </form>
             <div id="sliderBet">
                 <label id="BetLabel" for="BettingRange">Bet: </label>
-                <input type="range" id="BettingRange" min="{{ blind }}" max="{{ money }}" value="{{ blind * 2 }}">
+                <input type="range" id="BettingRange" min="{{ blind }}" max="{{ player.money | int }}" value="{{ blind * 2 }}">
                 <label for="BettingValue"></label>
-                <input type="number" id="BettingValue" max="{{ money }}" min="{{ blind }}" value="{{ blind * 2 }}" ><br>
+                <input type="number" id="BettingValue" max="{{ player.money | int }}" min="{{ blind }}" value="{{ blind * 2 }}" ><br>
                 <input type="submit" id="BettingSubmit" value="Bet">
+                <script>
+                    {#let money = document.URL.match(/money=([0-9]+)/)[1];#}
+                    const betButton = document.getElementById("BettingSubmit");
+
+                    betButton.onclick = function () {
+                        window.alert(document.getElementById("BettingRange").value);
+                    };
+                </script>
             </div>
         </div>
         <div id="PlayPokerMidDiv">
