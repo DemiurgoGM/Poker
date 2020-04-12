@@ -10,8 +10,8 @@
 
     <body>
         <div id="bodydivh1">
-            <h1><a href=""><i>Poker Game</i></a></h1>
-             <form action="PlayPoker" method="get" id="formDefaultLogin">
+            <h1><a href="{{ url_for('homepage') }}"><i>Poker Game</i></a></h1>
+             <form action="{{ url_for('play_poker') }}" method="get" id="formDefaultLogin">
                  <fieldset id="fieldsetDefaultLogin">
                      <legend>Log In</legend>
                      <label for="username"><b>Username: </b></label>
@@ -23,7 +23,7 @@
                      <input type="submit" value="Play Poker!" id="loginsubmit">
                  </fieldset>
              </form>
-            <form action="" method="post" id="formDefaultSignin">
+            <form action="{{ url_for('homepage') }}" method="post" id="formDefaultSignin">
                 <fieldset id="fieldsetDefaultSignin">
                     <legend>Sign In</legend>
                     <label for="usernameSignin"><b>Username: </b></label>

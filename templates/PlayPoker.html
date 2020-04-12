@@ -22,7 +22,7 @@
             <a href="/"><h1>Poker Game</h1></a><br><br>
             <h2>Hi {{ username }}! </h2><br>
             <h2>You're going to play with $ {{ money }}.</h2><br><br>
-            <form action="" method="get" id="FoldForm">
+            <form action="{{ url_for('play_poker') }}" method="get" id="FoldForm">
                 <input type="hidden" value="{{ username }}" name="user">
                 <input type="hidden" value="{{ money }}" name="money">
                 <input type="hidden" value="{{ round }}" name="round">
