@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
         <script type="module" src="../static/PlayPokerSliderScript.js"></script>
-{#        <script type="module" src="../static/PlayPokerBetFunction.js"></script>#}
+        <script type="module" src="../static/PlayPokerBetFunction.js"></script>
     </head>
 
     <body>
@@ -22,7 +22,7 @@
             <a href="/"><h1>Poker Game</h1></a><br><br>
             <h2>Hi {{ username }}! </h2><br>
             <h2>You're going to play with $ {{ money }}.</h2><br><br>
-            <form action="PlayPoker.html" method="get" id="FoldForm">
+            <form action="" method="get" id="FoldForm">
                 <input type="hidden" value="{{ username }}" name="user">
                 <input type="hidden" value="{{ money }}" name="money">
                 <input type="hidden" value="{{ round }}" name="round">

@@ -9,8 +9,3 @@ slider.oninput = function() {
 numberBox.oninput = function() {
     slider.value = this.value;
 };
-
-//
-// {#function betpressed(e) {#}
-// {#    window.alert("botao pressionado")#}
-

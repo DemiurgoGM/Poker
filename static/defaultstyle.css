@@ -27,7 +27,7 @@ h1 {
     text-align: center;
 }
 
-a, label, legend, #confirmB {
+a, label, legend, #confirmB, #passwordErrorText {
     color: white;
     text-decoration: none;
 }
@@ -36,6 +36,9 @@ label, #confirmB {
     margin-left: 13.5em;
 }
 
+#passwordErrorText {
+    margin-left: 15vw;
+}
 
 label {
     margin-top: 1vw;
