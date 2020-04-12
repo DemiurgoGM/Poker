@@ -1,3 +1,4 @@
+
 class Card:
     value = 0
     suit = ''
