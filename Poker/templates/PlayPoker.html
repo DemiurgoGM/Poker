@@ -5,7 +5,6 @@
         <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
-        <script type="module" src="../static/PlayPokerSliderScript.js"></script>
     </head>
 
     <body>
@@ -40,33 +39,66 @@
                 <script>
                     {#let money = document.URL.match(/money=([0-9]+)/)[1];#}
                     const betButton = document.getElementById("BettingSubmit");
+                    const slider = document.getElementById("BettingRange");
+                    const numberBox = document.getElementById("BettingValue");
 
+                    {# Bet window #}
                     betButton.onclick = function () {
                         window.alert(document.getElementById("BettingRange").value);
                     };
+
+                    {# Slider numberBox relationship #}
+                    numberBox.value = slider.value.toString();
+                    slider.oninput = function() {
+                        numberBox.value = this.value;
+                    };
+
+                    numberBox.oninput = function() {
+                        slider.value = this.value;
+                    };
                 </script>
+            </div>
+            <br>
+            <div id="handdiv">
+                <fieldset id="LeftFieldSet">
+                    <legend>Your Hand</legend>
+                    <h3 id="LeftFieldSetH3"></h3>
+                </fieldset>
             </div>
         </div>
         <div id="PlayPokerMidDiv">
             <fieldset id="MidFieldSet">
-                {% if phase == 'start' %}
-                    <h3>
-                        Your hand is
-                    </h3>
-                {% elif phase == 'flop' %}
-                    <h3>
-                        flop: <br>
-                        {% for _ in range(3) %}
-                            {{ deck.cards_list.pop() }}
-                        {% endfor %}
-                    </h3>
-                {% else %}
-                    <h3>
-                        Else if
-                    </h3>
-                {% endif %}
+                <h3 id="midfieldseth3"></h3>
+{#                {% if phase == 'start' %}#}
+{#                    <h3>#}
+{#                        Your hand is#}
+{#                    </h3>#}
+{#                {% elif phase == 'flop' %}#}
+{#                    <h3>#}
+{#                        flop: <br>#}
+{#                        {% for _ in range(3) %}#}
+{#                            {{ deck.cards_list.pop() }}#}
+{#                        {% endfor %}#}
+{#                    </h3>#}
+{#                {% else %}#}
+{#                    <h3>#}
+{#                        Else if#}
+{#                    </h3>#}
+{#                {% endif %}#}
             </fieldset>
         </div>
-        <script type="module" src="../static/PlayPokerFieldSetScript.js"></script>
+    <script>
+        const midfield = document.getElementById("midfieldseth3");
+        const leftfield = document.getElementById("LeftFieldSetH3");
+
+        leftfield.textContent += {{ deck.cards_list.pop() | string | tojson | safe }};
+        leftfield.textContent += "\r\n";
+        leftfield.textContent += {{ deck.cards_list.pop() | string | tojson | safe }};
+
+        {% for card in deck.cards_list %}
+            midfield.textContent += {{ card | string | tojson | safe }} + "\r\n";
+        {% endfor %}
+
+    </script>
     </body>
 </html>

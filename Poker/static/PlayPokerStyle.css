@@ -33,9 +33,8 @@ body {
 
 #PlayPokerMidDiv {
     width: 45%;
-    overflow: hidden;
+    overflow: paged-y;
     margin: 1vw auto 0;
-    padding-left: 25vw;
     padding-top: 1vw;
     display: block;
 }
@@ -52,13 +51,17 @@ h1 {
 }
 
 
-a, label, h2, h3, h4, h5, h6 {
+a, label, legend, h2, h3, h4, h5, h6 {
     color: white;
     text-decoration: none;
 }
 
 label {
     font-size: 2.5vh;
+}
+
+h3 {
+    white-space: pre;
 }
 
 a {

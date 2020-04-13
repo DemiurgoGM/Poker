@@ -12,8 +12,8 @@ from Poker.models.dbModel import User
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    user = request.form
-    if user:
+    if request.form:
+        user = request.form
         hash_password = bcrypt.generate_password_hash(user.get('password')).decode('utf-8')
         if User.query.filter_by(username=user.get('user')).first():
             return render_template('default.html', message='Username already taken. Please choose another one.')
@@ -24,7 +24,7 @@ def homepage():
         db.session.add(new_user)
         db.session.commit()
         return render_template('default.html', success=True)
-    if request.args:
+    elif request.args:
         return render_template('default.html', message=request.args.get('message'))
     return render_template('default.html')
 
@@ -32,8 +32,8 @@ def homepage():
 @app.route('/PlayPoker', methods=['GET', 'POST'])
 def play_poker():
     if request.form:
-        form = request.form  # expected args: (user/money/)phase/text/deck/blind/round
-        if current_user.is_authenticated:
+        form = request.form  # expected args: (user/money/)/deck/blind/round
+        if current_user.is_active:
             return Play_Poker_Form_work(form)
         else:
             user = User.query.filter_by(username=form.get('user')).first()
@@ -47,22 +47,19 @@ def play_poker():
 
 
 def Play_Poker_Form_work(form):
-    if form.get('phase') is None or form.get('phase') == 'start':
-        deck = Deck()
-        for _ in range(7):
-            shuffle(deck.cards_list)
-        player = Player(form.get('user'), form.get('money'))
-        if form.get('blind') is not None:
-            blind = int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
-        else:
-            blind = 100
-        return render_template('PlayPoker.html',
-                               player=player, deck=deck,
-                               blind=blind, round=int(form.get('round')) + 1,
-                               phase='start', text='')
+    player = Player(form.get('user'), form.get('money'))
+    if form.get('blind') is not None:
+        blind = int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
     else:
-        # TODO
-        return redirect(url_for('homepage', message='TODO'))
+        blind = 100
+    deck = Deck()
+    for _ in range(7):
+        shuffle(deck.cards_list)
+
+    return render_template('PlayPoker.html',
+                           player=player, deck=deck,
+                           blind=blind, round=int(form.get('round')) + 1,
+                           phase='start')
 
 
 @app.route('/logOut')

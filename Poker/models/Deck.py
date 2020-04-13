@@ -24,6 +24,7 @@ class Deck:
     cards_list = list()
 
     def __init__(self):
+        self.cards_list.clear()
         for value in range(1, 14):
             for suit in ('diamonds', 'clubs', 'hearts', 'spades'):
                 self.cards_list.append(Card(value, suit))
