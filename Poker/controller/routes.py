@@ -4,8 +4,8 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_user, current_user, logout_user
 
 from Poker.controller import app, db, bcrypt
-from Poker.models.Deck import Deck
-from Poker.models.Player import Player
+from Poker.models.Deck import Deck, compare_hands
+from Poker.models.Player import Player, Hand
 from Poker.models.dbModel import User
 
 
@@ -32,7 +32,7 @@ def homepage():
 @app.route('/PlayPoker', methods=['GET', 'POST'])
 def play_poker():
     if request.form:
-        form = request.form  # expected args: (user/money/)/deck/blind/round
+        form = request.form
         if current_user.is_active:
             return Play_Poker_Form_work(form)
         else:
@@ -53,11 +53,12 @@ def Play_Poker_Form_work(form):
     else:
         blind = 100
     deck = Deck()
-    for _ in range(7):
+    for _ in range(5):
         shuffle(deck.cards_list)
 
     return render_template('PlayPoker.html',
                            player=player, deck=deck,
+                           Hand=Hand, compare_hands=compare_hands,
                            blind=blind, round=int(form.get('round')) + 1,
                            phase='start')
 

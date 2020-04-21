@@ -1,9 +1,11 @@
 
 class Hand:
-    hand = []
+    hand = list()
 
     def __init__(self, card1, card2):
-        self.hand = [card1, card2]
+        self.hand = list()
+        self.hand.append(card1)
+        self.hand.append(card2)
 
     def __str__(self):
         string = ''
@@ -18,16 +20,13 @@ class Hand:
 class Player:
     user = ''
     money = 0
-    hand = []
 
-    def __init__(self, username, value, hand=None):
+    def __init__(self, username, value):
         self.user = username
         self.money = value
-        self.hand = hand
 
     def __str__(self):
-        return f'{self.user} has ${self.money} with the hand {self.hand}'
-
+        return f'{self.user} has ${self.money}'
 
 # hand = Hand(Card(1, 'a'), Card(2, 'a'))
 # print(hand)

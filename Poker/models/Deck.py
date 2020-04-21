@@ -1,4 +1,3 @@
-
 class Card:
     value = 0
     suit = ''
@@ -37,27 +36,10 @@ class Deck:
 
 
 def getKicker(hand):
-    if hand[0].value == 1 or hand[-1].value == 1:
-        return 14
-    first_card = hand[0]
-    for card in hand[1:]:
-        if card.value > first_card.value:
-            first_card = card
-    return first_card.value
-
-
-def isStaightFlush(hand):
-    first_card = hand[0]
-    counter = 0
-    for card in hand[1:]:  # The plan is to get the hand ordered
-        if (card.value == first_card.value + 1 or (card.value == 1 and first_card.value == 13)) \
-                and card.suit == first_card.suit:
-            first_card = card
-            counter = counter + 1
-            continue
-        else:
-            break
-    return counter == 4
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    return 14 if cards_value[0] == 1 else cards_value[-1]
 
 
 def isQuad(hand):
@@ -67,59 +49,68 @@ def isQuad(hand):
         if card.value == first_card.value:
             counter = counter + 1
             continue
-
     return counter == 3
 
 
 def getQuadKicker(hand):
-    if isQuad(hand):
-        value = hand[-1].value
-        if value == 1:
-            return 14
-        else:
-            return value
-    else:
-        return -1
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    value = -1
+    if hand.count(cards_value[0]) == 4:
+        value = cards_value[-1]
+    elif hand.count(cards_value[-1]) == 4:
+        value = cards_value[0]
+    return 14 if value == 1 else value
 
 
 def getQuadCard(hand):
-    if isQuad(hand):
-        value = hand[0].value
-        if value == 1:
-            return 14
-        else:
-            return value
-    else:
-        return -1
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    value = -1
+    if hand.count(cards_value[0]) == 4:
+        value = cards_value[0]
+    elif hand.count(cards_value[-1]) == 4:
+        value = cards_value[-1]
+    return 14 if value == 1 else value
 
 
 def isFullHouse(hand):
     cards_value = list()
     for card in hand:
         cards_value.append(card.value)
-    return cards_value.count(cards_value[0]) == 3 and cards_value.count(cards_value[-1]) == 2
+    cards_value.sort()
+    return (cards_value.count(cards_value[0]) == 3 and cards_value.count(cards_value[-1]) == 2) \
+           or (cards_value.count(cards_value[0]) == 2 and cards_value.count(cards_value[-1]) == 3)
 
 
 def getFullHouseThreeCard(hand):
-    if isFullHouse(hand):
-        value = hand[0].value
-        if value == 1:
-            return 14
-        else:
-            return value
-    else:
-        return -1
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    value = -1
+    if hand.count(cards_value[0]) == 3:
+        value = cards_value[0]
+    elif hand.count(cards_value[-1]) == 3:
+        value = cards_value[-1]
+    return 14 if value == 1 else value
 
 
 def getFullHouseTwoCard(hand):
-    if isFullHouse(hand):
-        value = hand[-1].value
-        if value == 1:
-            return 14
-        else:
-            return value
-    else:
-        return -1
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    value = -1
+    if hand.count(cards_value[0]) == 2:
+        value = cards_value[0]
+    elif hand.count(cards_value[-1]) == 2:
+        value = cards_value[-1]
+    return 14 if value == 1 else value
 
 
 def isFlush(hand):
@@ -133,33 +124,21 @@ def isFlush(hand):
     return counter == 4
 
 
-def isStraight(hand):
-    first_card = hand[0]
+def isStraight(hand):  # if the hand received isn't ordered, use this instead
     counter = 0
-    for card in hand[1:]:  # The plan is to get the hand ordered
-        if card.value == first_card.value + 1 or (card.value == 1 and first_card.value == 13):
-            first_card = card
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    if cards_value[0] == 1 and cards_value[-1] == 13:
+        cards_value[0] = 14
+        cards_value.sort()
+    first_value = cards_value[0]
+    for value in cards_value[1:]:
+        if value == first_value + 1:
             counter = counter + 1
-        else:
-            break
+            first_value = value
     return counter == 4
-
-
-# def isStraightWorkingTest(hand):  # if the hand received isn't ordered, use this instead
-#     counter = 0
-#     cards_value = list()
-#     for card in hand:
-#         cards_value.append(card.value)
-#     cards_value.sort()
-#     if cards_value[0] == 1 and cards_value[-1] == 13:
-#         cards_value[0] = 14
-#         cards_value.sort()
-#     first_value = cards_value[0]
-#     for value in cards_value[1:]:
-#         if value == first_value + 1:
-#             counter = counter + 1
-#             first_value = value
-#     return counter == 4
 
 
 def isThreeEquals(hand):
@@ -190,14 +169,22 @@ def getNotRepeatedHand(hand):
         if cards_value.count(i) > 1:
             while cards_value.count(i) > 0:
                 cards_value.remove(i)
+    cards_value.sort()
     return cards_value
 
 
 def isTwoPair(hand):
     cards_value = list()
+    pair_values = list()
     for card in hand:
         cards_value.append(card.value)
-    return cards_value.count(cards_value[0]) == 2 and cards_value.count(cards_value[2]) == 2
+    while cards_value.count(1) > 0:
+        cards_value.remove(1)
+        cards_value.append(14)
+    for i in range(2, 15):
+        if cards_value.count(i) == 2:
+            pair_values.append(i)
+    return len(pair_values) == 2
 
 
 def getBiggerValueFromPairedHand(hand):
@@ -236,6 +223,10 @@ def isPair(hand):
         if cards_value.count(cards_value[i]) == 2:
             return True
     return False
+
+
+def isStaightFlush(hand):
+    return isStraight(hand) and isFlush(hand)
 
 
 def compare_hands(hand_one, hand_two):
