@@ -1,3 +1,4 @@
+from ast import literal_eval
 from random import shuffle
 
 from flask import render_template, request, redirect, url_for
@@ -12,6 +13,8 @@ from Poker.models.dbModel import User
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
+    if current_user.is_active:
+        logout_user()
     if request.form:
         user = request.form
         hash_password = bcrypt.generate_password_hash(user.get('password')).decode('utf-8')
@@ -47,20 +50,25 @@ def play_poker():
 
 
 def Play_Poker_Form_work(form):
-    player = Player(form.get('user'), form.get('money'))
-    if form.get('blind') is not None:
-        blind = int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
-    else:
-        blind = 100
     deck = Deck()
     for _ in range(5):
         shuffle(deck.cards_list)
 
-    return render_template('PlayPoker.html',
-                           player=player, deck=deck,
-                           Hand=Hand, compare_hands=compare_hands,
-                           blind=blind, round=int(form.get('round')) + 1,
-                           phase='start')
+    if form.get('info'):
+        info = literal_eval(form.get('info'))
+        info['round'] = int(info['round']) + 1
+        info['blind'] = int(info['blind']) if int(info['round']) % 10 != 0 else int(info['blind']) + 100
+        return render_template('PlayPoker.html', info=info, deck=deck,
+                               Hand=Hand, make_player=Player, compare_hands=compare_hands)
+    else:
+        information = {
+            "user": form.get('user'),
+            "money": form.get('money'),
+            "round": int(form.get('round')) + 1,
+            "blind": int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
+        }
+        return render_template('PlayPoker.html', info=information, deck=deck,
+                               Hand=Hand, make_player=Player, compare_hands=compare_hands)
 
 
 @app.route('/logOut')
