@@ -1,3 +1,4 @@
+
 from ast import literal_eval
 from random import shuffle
 
@@ -58,16 +59,15 @@ def Play_Poker_Form_work(form):
         info = literal_eval(form.get('info'))
         info['round'] = int(info['round']) + 1
         info['blind'] = int(info['blind']) if int(info['round']) % 10 != 0 else int(info['blind']) + 100
-        return render_template('PlayPoker.html', info=info, deck=deck,
+        return render_template('PlayPoker.html', info=info, deck=deck, money=form.get('money'),
                                Hand=Hand, make_player=Player, compare_hands=compare_hands)
     else:
         information = {
             "user": form.get('user'),
-            "money": form.get('money'),
             "round": int(form.get('round')) + 1,
             "blind": int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
         }
-        return render_template('PlayPoker.html', info=information, deck=deck,
+        return render_template('PlayPoker.html', info=information, deck=deck, money=form.get('money'),
                                Hand=Hand, make_player=Player, compare_hands=compare_hands)
 
 

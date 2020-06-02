@@ -1,0 +1,15 @@
+->make a functional poker game
+    ->client-side
+        ->game start
+        ->Fold working
+        ->Working on Bet button
+        ->check
+        ->game finish
+->make profile about page
+    ->win rate
+    ->how much was won/lost (savings)
+    ->profile picture
+    ->description(?)
+->make IA
+    ->???
+

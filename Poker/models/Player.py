@@ -1,20 +1,38 @@
 
+import itertools
+
+from Poker.models.Deck import compare_hands
+
+
 class Hand:
     hand = list()
 
-    def __init__(self, card1, card2):
+    def __init__(self, card1, card2, *args):
         self.hand = list()
         self.hand.append(card1)
         self.hand.append(card2)
+        for arg in args:
+            self.hand.append(arg)
 
     def __str__(self):
         string = ''
         for card in self.hand:
             if string != '':
-                string = f'{string}; {card}'
+                string = f'     {string}<br>     {card}'
             else:
                 string = f'{card}'
         return string
+
+    def addCard(self, card):
+        self.hand.append(card)
+
+    def setBestHand(self):
+        # assuming 7 cards hand, get all 5 cards hand and decides the best one
+        all_hands = list(itertools.combinations(self.hand, 5))
+        best_hand = all_hands[0]
+        for var_hand in all_hands[1:]:
+            best_hand = var_hand if compare_hands(best_hand, var_hand) == var_hand else best_hand
+        self.hand = best_hand
 
 
 class Player:
@@ -28,5 +46,7 @@ class Player:
     def __str__(self):
         return f'{self.user} has ${self.money}'
 
-# hand = Hand(Card(1, 'a'), Card(2, 'a'))
+
+# hand = Hand(Card(8, 'a'), Card(4, 'a'), Card(2, 'd'), Card(3, 'b'), Card(6, 'e'), Card(11, 'c'), Card(13, 'd'))
+# hand.setBestHand()
 # print(hand)

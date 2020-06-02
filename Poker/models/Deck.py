@@ -18,6 +18,9 @@ class Card:
         else:
             return f"{self.value} of {self.suit}"
 
+    def __repr__(self):
+        return self.__str__()
+
 
 class Deck:
     cards_list = list()
@@ -34,22 +37,30 @@ class Deck:
             string += f"{i}\n"
         return string
 
+    def get_n_cards(self, n):
+        n_cards = list()
+        for i in range(n):
+            n_cards.append(self.cards_list[i])
+        return n_cards
+
 
 def getKicker(hand):
     cards_value = list()
     for card in hand:
         cards_value.append(card.value)
+    cards_value.sort()
     return 14 if cards_value[0] == 1 else cards_value[-1]
 
 
 def isQuad(hand):
-    counter = 0
-    first_card = hand[0]
-    for card in hand[1:]:
-        if card.value == first_card.value:
-            counter = counter + 1
-            continue
-    return counter == 3
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    for i in range(2):
+        if cards_value.count(cards_value[i]) == 4:
+            return True
+    return False
 
 
 def getQuadKicker(hand):
@@ -58,9 +69,9 @@ def getQuadKicker(hand):
         cards_value.append(card.value)
     cards_value.sort()
     value = -1
-    if hand.count(cards_value[0]) == 4:
+    if cards_value.count(cards_value[0]) == 4:
         value = cards_value[-1]
-    elif hand.count(cards_value[-1]) == 4:
+    elif cards_value.count(cards_value[-1]) == 4:
         value = cards_value[0]
     return 14 if value == 1 else value
 
@@ -71,9 +82,9 @@ def getQuadCard(hand):
         cards_value.append(card.value)
     cards_value.sort()
     value = -1
-    if hand.count(cards_value[0]) == 4:
+    if cards_value.count(cards_value[0]) == 4:
         value = cards_value[0]
-    elif hand.count(cards_value[-1]) == 4:
+    elif cards_value.count(cards_value[-1]) == 4:
         value = cards_value[-1]
     return 14 if value == 1 else value
 
@@ -93,9 +104,9 @@ def getFullHouseThreeCard(hand):
         cards_value.append(card.value)
     cards_value.sort()
     value = -1
-    if hand.count(cards_value[0]) == 3:
+    if cards_value.count(cards_value[0]) == 3:
         value = cards_value[0]
-    elif hand.count(cards_value[-1]) == 3:
+    elif cards_value.count(cards_value[-1]) == 3:
         value = cards_value[-1]
     return 14 if value == 1 else value
 
@@ -106,9 +117,9 @@ def getFullHouseTwoCard(hand):
         cards_value.append(card.value)
     cards_value.sort()
     value = -1
-    if hand.count(cards_value[0]) == 2:
+    if cards_value.count(cards_value[0]) == 2:
         value = cards_value[0]
-    elif hand.count(cards_value[-1]) == 2:
+    elif cards_value.count(cards_value[-1]) == 2:
         value = cards_value[-1]
     return 14 if value == 1 else value
 
@@ -142,12 +153,14 @@ def isStraight(hand):  # if the hand received isn't ordered, use this instead
 
 
 def isThreeEquals(hand):
-    counter = 0
-    first_card = hand[0]
-    for card in hand[1:]:
-        if card.value == first_card.value:
-            counter = counter + 1
-    return counter == 2
+    cards_value = list()
+    for card in hand:
+        cards_value.append(card.value)
+    cards_value.sort()
+    for i in range(3):
+        if cards_value.count(cards_value[i]) == 3:
+            return True
+    return False
 
 
 def getThreeEqualCard(hand):
@@ -155,9 +168,9 @@ def getThreeEqualCard(hand):
     for card in hand:
         cards_value.append(card.value)
     cards_value.sort()
-    for i in range(1, 14):
-        if cards_value.count(i) == 3:
-            return 14 if i == 1 else i
+    for i in range(3):
+        if cards_value.count(cards_value[i]) == 3:
+            return cards_value[i] if cards_value[i] != 1 else 14
     return -1  # didn't find the repeating card.
 
 
@@ -165,26 +178,25 @@ def getNotRepeatedHand(hand):
     cards_value = list()
     for card in hand:
         cards_value.append(card.value)
-    for i in range(1, 14):
-        if cards_value.count(i) > 1:
-            while cards_value.count(i) > 0:
-                cards_value.remove(i)
+    for value in cards_value:
+        if cards_value.count(value) > 1:
+            while cards_value.count(value) > 0:
+                cards_value.remove(value)
     cards_value.sort()
     return cards_value
 
 
 def isTwoPair(hand):
     cards_value = list()
-    pair_values = list()
+    counter = 0
     for card in hand:
         cards_value.append(card.value)
-    while cards_value.count(1) > 0:
-        cards_value.remove(1)
-        cards_value.append(14)
-    for i in range(2, 15):
-        if cards_value.count(i) == 2:
-            pair_values.append(i)
-    return len(pair_values) == 2
+    cards_value.sort()
+    for value in cards_value:
+        if cards_value.count(value) == 2:
+            counter = counter + 1
+            cards_value.remove(value)
+    return counter == 2
 
 
 def getBiggerValueFromPairedHand(hand):
@@ -219,7 +231,7 @@ def isPair(hand):
     cards_value = list()
     for card in hand:
         cards_value.append(card.value)
-    for i in range(0, 5):
+    for i in range(4):
         if cards_value.count(cards_value[i]) == 2:
             return True
     return False
@@ -227,6 +239,29 @@ def isPair(hand):
 
 def isStaightFlush(hand):
     return isStraight(hand) and isFlush(hand)
+
+
+def compare_hands_values(hand_one, hand_two):  # assuming all different cards
+    first_hand_cards = list()
+    second_hand_cards = list()
+    for card in hand_one:
+        first_hand_cards.append(card.value)
+    for card in hand_two:
+        second_hand_cards.append(card.value)
+    first_hand_cards.sort()
+    if first_hand_cards[0] == 1:
+        first_hand_cards[0] = 14
+        first_hand_cards.sort()
+    second_hand_cards.sort()
+    if second_hand_cards[0] == 1:
+        second_hand_cards[0] = 14
+        second_hand_cards.sort()
+    for i in range(4, -1, -1):
+        if first_hand_cards[i] > second_hand_cards[i]:
+            return hand_one
+        elif second_hand_cards[i] > first_hand_cards[i]:
+            return hand_two
+    return list()
 
 
 def compare_hands(hand_one, hand_two):
@@ -278,12 +313,7 @@ def compare_hands(hand_one, hand_two):
         return hand_two
     elif isFlush(hand_one):
         if isFlush(hand_two):
-            if getKicker(hand_one) > getKicker(hand_two):
-                return hand_one
-            elif getKicker(hand_two) > getKicker(hand_one):
-                return hand_two
-            else:
-                return list()
+            return compare_hands_values(hand_one, hand_two)
         else:
             return hand_one
     elif isFlush(hand_two):
@@ -315,7 +345,7 @@ def compare_hands(hand_one, hand_two):
                     hand_two_cards[hand_two_cards.index(1)] = 14
                 hand_one_cards.sort()
                 hand_two_cards.sort()
-                for i in range(3, -1, -1):
+                for i in range(1, -1, -1):
                     if hand_one_cards[i] > hand_two_cards[i]:
                         return hand_one
                     elif hand_two_cards[i] > hand_one_cards[i]:
@@ -328,7 +358,7 @@ def compare_hands(hand_one, hand_two):
     elif isTwoPair(hand_one):
         if isTwoPair(hand_two):
             hand_one_big_value = getBiggerValueFromPairedHand(hand_one)
-            hand_two_big_value = getSmallerValueFromPairedHand(hand_two)
+            hand_two_big_value = getBiggerValueFromPairedHand(hand_two)
             if hand_one_big_value > hand_two_big_value:
                 return hand_one
             elif hand_two_big_value > hand_one_big_value:
@@ -383,26 +413,9 @@ def compare_hands(hand_one, hand_two):
     elif isPair(hand_two):
         return hand_two
     else:  # Bigger kicker wins, if equals see other big card...
-        first_hand_cards = list()
-        second_hand_cards = list()
-        for card in hand_one:
-            first_hand_cards.append(card.value)
-        for card in hand_two:
-            second_hand_cards.append(card.value)
-        first_hand_cards.sort()
-        if first_hand_cards[0] == 1:
-            first_hand_cards[0] = 14
-            first_hand_cards.sort()
-        second_hand_cards.sort()
-        if second_hand_cards[0] == 1:
-            second_hand_cards[0] = 14
-            second_hand_cards.sort()
-        for i in range(4, -1, -1):
-            if first_hand_cards[i] > second_hand_cards[i]:
-                return hand_one
-            elif second_hand_cards[i] > first_hand_cards[i]:
-                return hand_two
-        return list()
+        return compare_hands_values(hand_one, hand_two)
 
-# hand = (Card(1, 'a'), Card(2, 'a'), Card(13, 'a'), Card(2, 'a'), Card(3, 'a'))
-# print(getNotRepeatedHand(hand))
+
+# hand = (Card(11, 'a'), Card(10, 'b'), Card(11, 'a'), Card(2, 'a'), Card(10, 'a'))
+# hand2 = (Card(1, 'a'), Card(10, 'a'), Card(8, 'c'), Card(8, 'a'), Card(10, 'a'))
+# print(compare_hands(hand, hand2))

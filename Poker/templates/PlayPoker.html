@@ -15,50 +15,37 @@
                 Information about the game:
             </h2>
             <h4 id="RightDivH4">
-                Blinds = {{ info['blind'] }}
-                <br>
+                Blinds = {{ info['blind'] }}<br>
                 Current Round = {{ info['round'] }}
             </h4>
         </div>
         <div id="PlayPokerLeftDiv">
             <a href="{{ url_for('logouttoHomePage') }}"><h1>Poker Game</h1></a><br><br>
             <h2>Hi {{ info['user'] }}! </h2><br>
-            <h2>You're going to play with $ {{ info['money'] | int }}.</h2><br><br>
+            <h2 id="playertextmoney">You're going to play with $ {{ money | int }}.</h2><br><br>
             <form action="{{ url_for('play_poker') }}" method="post" id="FoldForm">
                 <input type="hidden" value="{{ info }}" name="info">
                 <input type="hidden" value="{{ deck }}" name="deck">
+                <input type="hidden" value="{{ money }}" name="money" id="player_money_input">
                 <input type="submit" value="Fold" id="FoldButton" class="playerActionButton">
             </form>
             <div id="sliderBet">
                 <label id="BetLabel" for="BettingRange">Bet: </label>
-                <input type="range" id="BettingRange" min="{{ info['blind'] }}" max="{{ info['money'] | int }}" value="{{ info['blind'] * 2 }}">
+                <input type="range" id="BettingRange" min="{{ info['blind'] }}" max="{{ money | int }}" value="{{ info['blind'] * 2 }}">
                 <label for="BettingValue"></label>
-                <input type="number" id="BettingValue" max="{{ info['money'] | int }}" min="{{ info['blind'] }}" value="{{ info['blind'] * 2 }}" ><br>
+                <input type="number" id="BettingValue" max="{{ money | int }}" min="{{ info['blind'] }}" value="{{ info['blind'] * 2 }}" ><br>
                 <input type="submit" id="BettingSubmit" value="Bet" class="playerActionButton">
-                <script>
+                <script> {# Buttons script #}
                     {#let money = document.URL.match(/money=([0-9]+)/)[1];#}
                     const betButton = document.getElementById("BettingSubmit");
                     const slider = document.getElementById("BettingRange");
                     const numberBox = document.getElementById("BettingValue");
-                    let player_money = {{ info['money'] | int}};
-                    let computer_money = {{ info['money'] | int}};
+                    const playertextmoney = document.getElementById("playertextmoney");
+                    const playermoneyinput = document.getElementById("player_money_input");
+                    let player_money = {{ money | int}};
+                    let computer_money = {{ money | int}};
                     let pot = 0;
-
-                    {# Bet window #}
-                    betButton.onclick = function () {
-                        const betValue = document.getElementById("BettingRange").value;
-                        {# Place bet #}
-                        player_money = player_money - betValue;
-                        pot += betValue;
-                        {# Make sure the slider and numberbox doesn't break its values #}
-                        slider.min = parseInt(slider.min) < parseInt(player_money) ? parseInt(slider.min) : parseInt(player_money);
-                        slider.max = player_money;
-                        slider.value = Math.floor((parseInt(slider.min) + parseInt(slider.max)) / 2);
-                        numberBox.min = parseInt(numberBox.min) < parseInt(player_money) ? parseInt(numberBox.min): parseInt(player_money);
-                        numberBox.max = player_money;
-                        numberBox.value = Math.floor((parseInt(numberBox.min) + parseInt(numberBox.max)) / 2);
-                    {#  TODO computer action interface action game follow-up  #}
-                    };
+                    let game_phase = "start";
 
                     {# Slider numberBox relationship #}
                     slider.oninput = function() {
@@ -68,10 +55,81 @@
                     numberBox.oninput = function() {
                         slider.value = this.value;
                     };
+
+                    function adjust_player_info() {
+                        slider.min = parseInt(slider.min) < parseInt(player_money) ? parseInt(slider.min) : parseInt(player_money);
+                        slider.max = player_money;
+                        slider.value = Math.floor((parseInt(slider.min) + parseInt(slider.max)) / 2);
+                        numberBox.min = parseInt(numberBox.min) < parseInt(player_money) ? parseInt(numberBox.min): parseInt(player_money);
+                        numberBox.max = player_money;
+                        numberBox.value = Math.floor((parseInt(numberBox.min) + parseInt(numberBox.max)) / 2);
+                        playertextmoney.textContent = "You're going to play with $ " + player_money + ".";
+                        playermoneyinput.value = player_money;
+                    }
+
+                    function reduce_player_money(amount) {
+                        player_money = player_money - amount;
+                        {# Make sure the slider and numberbox doesn't break its values #}
+                        adjust_player_info();
+                    }
+
+                    function sum_player_money(amount) {
+                        player_money = player_money + amount;
+                        {# Make sure the slider and numberbox doesn't break its values #}
+                        adjust_player_info();
+                    }
+
+                    function adjust_computer_money() {
+                        rightfield.innerHTML = "Blinds = {{ info['blind'] }}<br>Current Round = {{ info['round'] }}";
+                        rightfield.innerHTML += "<br>Computer money = " + computer_money;
+                    }
+
+                    function reduce_computer_money(amount) {
+                        computer_money = computer_money - amount;
+                        adjust_computer_money();
+                    }
+
+                    function sum_computer_money(amount) {
+                        computer_money = computer_money + amount;
+                        adjust_computer_money();
+                    }
+
+                    {# Bet window #}
+                    betButton.onclick = function () {
+                        const betValue = document.getElementById("BettingRange").value;
+                        pot += betValue;
+                        {# Place bet #}
+                        reduce_player_money(betValue);
+                        {# TODO text midfield detailing action #}
+                        {# if game_phase... #}
+
+                        {# TODO computer action interface action game follow-up  #}
+                        {# computer will always check/pay until IA is implemented #}
+                        if(computer_money >= betValue) {
+                            pot += betValue;
+                            reduce_computer_money(betValue);
+                        } else {
+                            const pay_difference = betValue - computer_money;
+                            pot = pot - pay_difference;
+                            sum_player_money(pay_difference);
+                            pot += computer_money;
+                            reduce_computer_money(computer_money);
+                        }
+                        {# TODO text midfield detailing action from computer #}
+                    };
+
                 </script>
             </div>
             <p>
                 <input type="submit" id="checkButton" value="check" class="playerActionButton">
+                <script>
+                    const checkButton = document.getElementById("checkButton");
+
+                    checkButton.onclick = function() {
+                    {#    if there's nothing to pay #}
+
+                    }
+                </script>
             </p>
             <div id="handdiv">
                 <fieldset id="LeftFieldSet">
@@ -86,11 +144,12 @@
             </fieldset>
         </div>
     <script>
+{#    Start of the game script #}
         const midfield = document.getElementById("midfieldseth3");
         const leftfield = document.getElementById("LeftFieldSetH3");
         const rightfield = document.getElementById("RightDivH4");
 
-        leftfield.textContent += {{ player_hand | string | tojson | safe}};
+        leftfield.innerHTML += {{ player_hand | string | tojson | safe}};
         rightfield.innerHTML += "<br>Computer money = " + computer_money;
 
         {# Beginning of the game: #}
