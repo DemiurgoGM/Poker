@@ -5,8 +5,6 @@
         <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
-        {% set player_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop()) %}
-        {% set computer_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop()) %}
     </head>
 
     <body>
@@ -25,7 +23,6 @@
             <h2 id="playertextmoney">You're going to play with $ {{ money | int }}.</h2><br><br>
             <form action="{{ url_for('play_poker') }}" method="post" id="FoldForm">
                 <input type="hidden" value="{{ info }}" name="info">
-                <input type="hidden" value="{{ deck }}" name="deck">
                 <input type="hidden" value="{{ money }}" name="money" id="player_money_input">
                 <input type="submit" value="Fold" id="FoldButton" class="playerActionButton">
             </form>
@@ -42,10 +39,13 @@
                     const numberBox = document.getElementById("BettingValue");
                     const playertextmoney = document.getElementById("playertextmoney");
                     const playermoneyinput = document.getElementById("player_money_input");
+                    let current_round = {{ info['round'] | int }};
+                    let current_blind = {{ info['blind'] | int }};
                     let player_money = {{ money | int}};
                     let computer_money = {{ money | int}};
                     let pot = 0;
                     let game_phase = "start";
+                    let winner = {{ winner | int }}
 
                     {# Slider numberBox relationship #}
                     slider.oninput = function() {
@@ -149,15 +149,21 @@
         const leftfield = document.getElementById("LeftFieldSetH3");
         const rightfield = document.getElementById("RightDivH4");
 
-        leftfield.innerHTML += {{ player_hand | string | tojson | safe}};
+        leftfield.innerHTML += {{ player_hand.get_two_cards() | string | tojson | safe}};
         rightfield.innerHTML += "<br>Computer money = " + computer_money;
+
+        midfield.innerHTML += "Player hand: <br>";
+        {#midfield.innerHTML += {{ player_hand | string | tojson | safe}} + "<br>";#}
+        {#midfield.innerHTML += "Computer hand: <br>";#}
+        {#midfield.innerHTML += {{ computer_hand | string | tojson | safe}} + "<br>";#}
 
         {# Beginning of the game: #}
         {% if info['round'] % 2 == 1 %}
             {# If the round is odd, the player is the big blind TODO #}
-{#            {{ player.money = player.money - blind }}#}
+
         {% else %}
             {# If the round is even, the computer is the big blind #}
+
         {% endif %}
 
 {#        {% for card in deck.cards_list %}#}

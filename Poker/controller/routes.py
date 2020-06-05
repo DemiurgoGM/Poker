@@ -7,7 +7,7 @@ from flask_login import login_user, current_user, logout_user
 
 from Poker.controller import app, db, bcrypt
 from Poker.models.Deck import Deck, compare_hands
-from Poker.models.Player import Player, Hand
+from Poker.models.Player import Hand
 from Poker.models.dbModel import User
 
 
@@ -55,20 +55,42 @@ def Play_Poker_Form_work(form):
     for _ in range(5):
         shuffle(deck.cards_list)
 
+    player_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop())
+    computer_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop())
+    table_hand = deck.get_n_cards(5)
+
+    for card in table_hand:
+        player_hand.addCard(card)
+        computer_hand.addCard(card)
+
+    player_hand.setBestHand()
+    computer_hand.setBestHand()
+
+    compared_hands = compare_hands(player_hand.hand, computer_hand.hand)
+    # print(f'player_hand:{player_hand}\ncomputer_hand:{computer_hand}\ncompared_hands:{compared_hands}\n')
+    if compared_hands == player_hand.hand:
+        winner = 1
+    elif compared_hands == computer_hand.hand:
+        winner = 2
+    else:
+        winner = 3
+
     if form.get('info'):
         info = literal_eval(form.get('info'))
         info['round'] = int(info['round']) + 1
         info['blind'] = int(info['blind']) if int(info['round']) % 10 != 0 else int(info['blind']) + 100
-        return render_template('PlayPoker.html', info=info, deck=deck, money=form.get('money'),
-                               Hand=Hand, make_player=Player, compare_hands=compare_hands)
+        return render_template('PlayPoker.html', info=info, money=form.get('money'), winner=winner,
+                               player_hand=player_hand, computer_hand=computer_hand,
+                               Hand=Hand, compare_hands=compare_hands)
     else:
         information = {
             "user": form.get('user'),
             "round": int(form.get('round')) + 1,
             "blind": int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
         }
-        return render_template('PlayPoker.html', info=information, deck=deck, money=form.get('money'),
-                               Hand=Hand, make_player=Player, compare_hands=compare_hands)
+        return render_template('PlayPoker.html', info=information, money=form.get('money'), winner=winner,
+                               player_hand=player_hand, computer_hand=computer_hand, table_hand=table_hand,
+                               Hand=Hand, compare_hands=compare_hands)
 
 
 @app.route('/logOut')
