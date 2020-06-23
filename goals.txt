@@ -1,6 +1,5 @@
 ->make a functional poker game
     ->client-side
-        ->game start
         ->Fold working
         ->Working on Bet button
         ->check
