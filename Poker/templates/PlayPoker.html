@@ -26,6 +26,13 @@
                 <input type="hidden" value="{{ computer_money }}" name="computer_money" id="computer_money_input">
                 <input type="hidden" value="{{ money }}" name="money" id="player_money_input">
                 <input type="submit" value="Fold" id="FoldButton" class="playerActionButton">
+                <script>
+                    const FoldButton = document.getElementById("FoldButton");
+                    FoldButton.onclick = function () {
+                        sum_computer_money(pot);
+                        pot = 0;
+                    }
+                </script>
             </form>
             <div id="sliderBet">
                 <label id="BetLabel" for="BettingRange">Bet: </label>
@@ -219,32 +226,99 @@
             } else {
                 pot += player_money;
                 reduce_player_money(player_money);
-                midfield.innerHTML += "The player went all in as the big blind.<br>";
+                midfield.innerHTML += "The player went all in.<br>";
                 midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
                     {# small blind #}
                 small_blind = current_blind / 2;
                 if(pot >= small_blind) {
                     {# the 'bet' isn't full, it needs to calculate the difference to pay #}
-                    {# todo #}
                     if(computer_money > small_blind) {
+                        pay_difference = pot - small_blind;
                         computerPayed("small blind", small_blind);
+
+                        {# computer play / for now always pays #}
+                        computerPayed("remaining value", pay_difference);
                     } else {
-                        computerPayed("small blind with an all in", computer_money);
+                        computer_all_in_difference_pay(pot);
+                        midfield.innerHTML += "The computer went all in.<br>";
+                        midfield.innerHTML += "Part of the bet was returned to the player.<br>";
+                        midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
                     }
 
                 } else {
-                    if(computer_money > pot) {
+                    if(computer_money >= pot) {
                         computerPayed("player's all in", pot);
+                        {# computer action/ for now always check #}
+                        {#midfield.innerHTML += "The computer checks.<br>";#}
                     } else {
-                        computerPayed("player's all in with its own", computer_money);
+                        computer_all_in_difference_pay(pot);
+                        midfield.innerHTML += "The computer went all in.<br>";
+                        midfield.innerHTML += "Part of the bet was returned to the player.<br>";
+                        midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+
                     }
-                    {# computer action/ for now always check #}
-                    midfield.innerHTML += "The computer checks.<br>";
                 }
             }
         } else {
             midfield.innerHTML += "The computer is the Big Blind.<br>";
             {# If the round is even, the computer is the big blind #}
+            if(computer_money > current_blind) {
+                pot += current_blind;
+                reduce_computer_money(current_blind);
+                midfield.innerHTML += "The computer payed the big blind.<br>";
+                midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+                {# small blind #}
+                small_blind = current_blind / 2;
+                if(player_money > small_blind) {
+                    pot += small_blind;
+                    reduce_player_money(small_blind);
+                    midfield.innerHTML += "The player payed the small blind.<br>";
+                    midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+
+
+                    {# player plays #}
+                } else {
+                    midfield.innerHTML += "The player went all in.<br>";
+                    midfield.innerHTML += "Part of the bet was returned to the computer.<br>";
+                    player_all_in_difference_pay(pot);
+                    midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+                }
+            } else {
+                pot += computer_money;
+                reduce_computer_money(computer_money);
+                midfield.innerHTML += "The computer went all in.<br>";
+                midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+                {# small blind #}
+                small_blind = current_blind / 2;
+                if(pot >= small_blind) {
+                    if(player_money >= small_blind) {
+                        pot += small_blind;
+                        reduce_player_money(small_blind);
+                        midfield.innerHTML += "The player payed the small blind.<br>";
+                        midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+
+                        {# player plays #}
+                    } else {
+                        pay_difference = pot - player_money;
+                        player_all_in_difference_pay(pot);
+                        midfield.innerHTML += "The player went all in.<br>";
+                        midfield.innerHTML += "Part of the bet was returned to the computer.<br>";
+                        midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+                    }
+                } else {
+                    if(player_money >= pot) {
+                        reduce_player_money(pot);
+                        pot += pot;
+                        midfield.innerHTML += "The player payed the computer's all in.<br>";
+                        midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+                    } else {
+                        player_all_in_difference_pay(pot);
+                        midfield.innerHTML += "The player went all in.<br>";
+                        midfield.innerHTML += "Part of the bet was returned to the computer.<br>";
+                        midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
+                    }
+                }
+            }
 
         }
     </script>
