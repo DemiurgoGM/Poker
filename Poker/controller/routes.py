@@ -51,6 +51,9 @@ def play_poker():
 
 
 def Play_Poker_Form_work(form):
+
+    computer_money = int(form.get('computer_money')) if form.get('computer_money') else int(form.get('money'))
+
     deck = Deck()
     for _ in range(5):
         shuffle(deck.cards_list)
@@ -58,7 +61,6 @@ def Play_Poker_Form_work(form):
     player_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop())
     computer_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop())
     table_hand = deck.get_n_cards(5)
-
     for card in table_hand:
         player_hand.addCard(card)
         computer_hand.addCard(card)
@@ -67,7 +69,6 @@ def Play_Poker_Form_work(form):
     computer_hand.setBestHand()
 
     compared_hands = compare_hands(player_hand.hand, computer_hand.hand)
-    # print(f'player_hand:{player_hand}\ncomputer_hand:{computer_hand}\ncompared_hands:{compared_hands}\n')
     if compared_hands == player_hand.hand:
         winner = 1
     elif compared_hands == computer_hand.hand:
@@ -79,8 +80,10 @@ def Play_Poker_Form_work(form):
         info = literal_eval(form.get('info'))
         info['round'] = int(info['round']) + 1
         info['blind'] = int(info['blind']) if int(info['round']) % 10 != 0 else int(info['blind']) + 100
-        return render_template('PlayPoker.html', info=info, money=form.get('money'), winner=winner,
-                               player_hand=player_hand, computer_hand=computer_hand,
+        return render_template('PlayPoker.html',
+                               info=info, money=form.get('money'),
+                               winner=int(winner), player_hand=player_hand,
+                               computer_hand=computer_hand, computer_money=computer_money,
                                Hand=Hand, compare_hands=compare_hands)
     else:
         information = {
@@ -89,7 +92,8 @@ def Play_Poker_Form_work(form):
             "blind": int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
         }
         return render_template('PlayPoker.html', info=information, money=form.get('money'), winner=winner,
-                               player_hand=player_hand, computer_hand=computer_hand, table_hand=table_hand,
+                               player_hand=player_hand, computer_hand=computer_hand,
+                               table_hand=table_hand, computer_money=computer_money,
                                Hand=Hand, compare_hands=compare_hands)
 
 

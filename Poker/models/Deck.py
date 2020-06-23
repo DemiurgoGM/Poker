@@ -1,3 +1,7 @@
+import functools
+
+
+@functools.total_ordering
 class Card:
     value = 0
     suit = ''
@@ -20,6 +24,18 @@ class Card:
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        if type(other) == Card:
+            return self.value == other.value
+        else:
+            return NotImplemented
+
+    def __lt__(self, other):
+        if type(other) == Card:
+            return self.value < other.value
+        else:
+            return NotImplemented
 
 
 class Deck:
@@ -416,6 +432,6 @@ def compare_hands(hand_one, hand_two):
         return compare_hands_values(hand_one, hand_two)
 
 
-# hand = (Card(11, 'a'), Card(10, 'b'), Card(11, 'a'), Card(2, 'a'), Card(10, 'a'))
-# hand2 = (Card(1, 'a'), Card(10, 'a'), Card(8, 'c'), Card(8, 'a'), Card(10, 'a'))
-# print(compare_hands(hand, hand2))
+# hand = [Card(11, 'a'), Card(10, 'b'), Card(11, 'a'), Card(2, 'a'), Card(10, 'a')]
+# hand2 = [Card(1, 'a'), Card(10, 'a'), Card(8, 'c'), Card(8, 'a'), Card(10, 'a')]
+# hand3 = sorted(hand)
