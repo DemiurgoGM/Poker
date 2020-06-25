@@ -1,3 +1,4 @@
+
 import functools
 
 
@@ -403,6 +404,10 @@ def compare_hands_values(hand_one, hand_two):  # assuming all different cards
 
 
 def compare_hands(hand_one, hand_two):
+    if type(hand_one) != list or type(hand_two) != list:
+        raise NotImplementedError
+    if type(hand_one[0]) != Card or type(hand_two[0]) != Card:
+        raise NotImplementedError
     hand_one.sort()
     hand_two.sort()
     if isStaightFlush(hand_one):
@@ -556,6 +561,6 @@ def compare_hands(hand_one, hand_two):
         return compare_hands_values(hand_one, hand_two)
 
 
-# hand = [Card(2, 'a'), Card(4, 'b'), Card(5, 'a'), Card(6, 'a'), Card(7, 'a')]
-# hand2 = [Card(2, 'a'), Card(3, 'b'), Card(5, 'a'), Card(6, 'a'), Card(7, 'a')]
+# hand = [Card(2, 'a'), Card(2, 'b'), Card(9, 'a'), Card(3, 'a'), Card(1, 'a')]
+# hand2 = [Card(2, 'a'), Card(2, 'b'), Card(4, 'a'), Card(3, 'a'), Card(1, 'a')]
 # print(compare_hands(hand, hand2))
