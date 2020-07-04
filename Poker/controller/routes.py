@@ -6,9 +6,11 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_user, current_user, logout_user
 
 from Poker.controller import app, db, bcrypt
-from Poker.models.Deck import Deck, compare_hands
-from Poker.models.Player import Hand
+from Poker.models.Deck import Deck, compare_hands, Hand
 from Poker.models.dbModel import User
+
+# Deck is a global variable
+deck = Deck()
 
 
 @app.route('/home', methods=['GET', 'POST'])
@@ -17,6 +19,7 @@ def homepage():
     if current_user.is_active:
         logout_user()
     if request.form:
+        # adding new user to database
         user = request.form
         hash_password = bcrypt.generate_password_hash(user.get('password')).decode('utf-8')
         if User.query.filter_by(username=user.get('user')).first():
@@ -54,12 +57,11 @@ def Play_Poker_Form_work(form):
 
     computer_money = int(form.get('computer_money')) if form.get('computer_money') else int(form.get('money'))
 
-    deck = Deck()
-    for _ in range(5):
+    for _ in range(3):
         shuffle(deck.cards_list)
 
-    player_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop())
-    computer_hand = Hand(deck.cards_list.pop(), deck.cards_list.pop())
+    player_hand = Hand(deck[0], deck[1])
+    computer_hand = Hand(deck[2], deck[3])
     table_hand = deck.get_n_cards(5)
     for card in table_hand:
         player_hand.addCard(card)
@@ -70,31 +72,40 @@ def Play_Poker_Form_work(form):
 
     compared_hands = compare_hands(player_hand.hand, computer_hand.hand)
     if compared_hands == player_hand.hand:
+        # player wins
         winner = 1
     elif compared_hands == computer_hand.hand:
+        # computer wins
         winner = 2
     else:
+        # tie
         winner = 3
 
+    flop = ''
+    for i in range(3):
+        flop = flop + str(table_hand[i]) + '<br>'
+    # turn = table_hand[3]
+    # river = table_hand[4]
     if form.get('info'):
         info = literal_eval(form.get('info'))
         info['round'] = int(info['round']) + 1
         info['blind'] = int(info['blind']) if int(info['round']) % 10 != 0 else int(info['blind']) + 100
         return render_template('PlayPoker.html',
-                               info=info, money=form.get('money'),
-                               winner=int(winner), player_hand=player_hand,
-                               computer_hand=computer_hand, computer_money=computer_money,
-                               Hand=Hand, compare_hands=compare_hands)
+                               info=info, winner=winner,
+                               player_hand=player_hand, computer_hand=computer_hand,
+                               computer_money=computer_money, money=form.get('money'),
+                               flop=flop, turn=table_hand[3], river=table_hand[4])
     else:
         information = {
             "user": form.get('user'),
             "round": int(form.get('round')) + 1,
             "blind": int(form.get('blind')) if int(form.get('round')) % 10 != 0 else int(form.get('blind')) + 100
         }
-        return render_template('PlayPoker.html', info=information, money=form.get('money'), winner=winner,
-                               player_hand=player_hand, computer_hand=computer_hand,
-                               table_hand=table_hand, computer_money=computer_money,
-                               Hand=Hand, compare_hands=compare_hands)
+        return render_template('PlayPoker.html',
+                               info=information, winner=winner,
+                               money=form.get('money'), player_hand=player_hand,
+                               computer_hand=computer_hand, computer_money=computer_money,
+                               flop=flop, turn=table_hand[3], river=table_hand[4])
 
 
 @app.route('/logOut')

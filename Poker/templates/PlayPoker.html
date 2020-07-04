@@ -40,7 +40,7 @@
                 <label for="BettingValue"></label>
                 <input type="number" id="BettingValue" max="{{ money | int }}" min="{{ info['blind'] }}" value="{{ info['blind'] * 2 }}" ><br>
                 <input type="submit" id="BettingSubmit" value="Bet" class="playerActionButton">
-                <script> {# Buttons script #}
+                <script>
                     {#let money = document.URL.match(/money=([0-9]+)/)[1];#}
                     const betButton = document.getElementById("BettingSubmit");
                     const slider = document.getElementById("BettingRange");
@@ -48,13 +48,16 @@
                     const playertextmoney = document.getElementById("playertextmoney");
                     const playermoneyinput = document.getElementById("player_money_input");
                     const computermoneyinput = document.getElementById("computer_money_input");
-                    let current_round = {{ info['round'] | int }};
-                    let current_blind = {{ info['blind'] | int }};
-                    let player_money = {{ money | int}};
-                    let computer_money = {{ computer_money }};
+                    let current_round = {{ info['round'] | safe | int }};
+                    let current_blind = {{ info['blind'] | safe |  int }};
+                    let player_money = {{ money | safe |  int}};
+                    let computer_money = {{ computer_money | safe |  int }};
                     let pot = 0;
                     let game_phase = "start";
-                    let winner = {{ winner | int }}
+                    let winner = {{ winner | safe | tojson |  int }};
+                    let flop = {{ flop | safe | tojson | string }};
+                    let turn = {{ turn | safe | tojson | string }};
+                    let river = {{ river | safe | tojson | string }};
 
                     {# Slider numberBox relationship #}
                     slider.oninput = function() {
@@ -78,12 +81,12 @@
 
                     {# game functions #}
                     function adjust_player_info() {
-                        slider.min = parseInt(slider.min) < parseInt(player_money) ? parseInt(slider.min) : parseInt(player_money);
+                        slider.min = Number(slider.min) < Number(player_money) ? Number(slider.min) : Number(player_money);
                         slider.max = player_money;
-                        slider.value = Math.floor((parseInt(slider.min) + parseInt(slider.max)) / 2);
-                        numberBox.min = parseInt(numberBox.min) < parseInt(player_money) ? parseInt(numberBox.min): parseInt(player_money);
+                        slider.value = Math.floor((Number(slider.min) + Number(slider.max)) / 2);
+                        numberBox.min = Number(numberBox.min) < Number(player_money) ? Number(numberBox.min): Number(player_money);
                         numberBox.max = player_money;
-                        numberBox.value = Math.floor((parseInt(numberBox.min) + parseInt(numberBox.max)) / 2);
+                        numberBox.value = Math.floor((Number(numberBox.min) + Number(numberBox.max)) / 2);
                         playertextmoney.textContent = "You're going to play with $ " + player_money + ".";
                         playermoneyinput.value = player_money;
                     }
@@ -101,7 +104,7 @@
                     }
 
                     function adjust_computer_money() {
-                        rightfield.innerHTML = "Blinds = {{ info['blind'] }}<br>Current Round = {{ info['round'] }}";
+                        rightfield.innerHTML = "Blinds = " + current_blind + "<br>" + "Current Round = " + current_round;
                         rightfield.innerHTML += "<br>Computer money = " + computer_money;
                         computermoneyinput.value = computer_money;
                     }
@@ -139,25 +142,66 @@
                         reduce_player_money(player_money);
                     }
 
+                    function do_flop() {
+                        {# todo #}
+                        midfield.innerHTML += "The flop is:<br>";
+                        midfield.innerHTML += flop;
+                        game_phase = "turn";
+                    }
+
+                    function do_turn() {
+                        console.log("do_turn");
+                        game_phase = "river";
+                    }
+
+                    function do_river() {
+                        console.log("do_river");
+                        game_phase = "end";
+                    }
+
+                    function do_start() {
+                        midfield.innerHTML += "Player checks<br>";
+                        {# todo computer action #}
+                        midfield.innerHTML += "Computer checks<br>";
+                        game_phase = "flop";
+                    }
+
+                    function do_game_phase() {
+                            {# todo #}
+                            switch (game_phase) {
+                                case "start":
+                                    do_start();
+                                case "flop":
+                                    do_flop();
+                                    break;
+                                case "turn":
+                                    do_turn();
+                                    break;
+                                case "river":
+                                    do_river();
+                                    break;
+                                default:
+                                    return;
+                            }
+                        }
+
                     {# Bet window #}
                     betButton.onclick = function () {
-                        const betValue = document.getElementById("BettingRange").value;
-                        pot += betValue;
-                        {# Place bet #}
-                        reduce_player_money(betValue);
-                        {# TODO text midfield detailing action #}
-                        {# if game_phase... #}
-
-                        {# TODO computer action interface action game follow-up  #}
-                        {# computer will always check/pay until IA is implemented #}
-                        if(computer_money >= betValue) {
+                            const betValue = Number(document.getElementById("BettingRange").value);
                             pot += betValue;
-                            reduce_computer_money(betValue);
-                        } else {
-                            computer_all_in_difference_pay(betValue);
-                        }
-                        {# TODO text midfield detailing action from computer #}
-                    };
+                            {# Place bet #}
+                            reduce_player_money(betValue);
+                            {# TODO text midfield detailing action #}
+                            {# TODO computer action interface action game follow-up  #}
+                            {# computer will always check/pay until IA is implemented #}
+                            if(computer_money >= betValue) {
+                                pot += betValue;
+                                reduce_computer_money(betValue);
+                            } else {
+                                computer_all_in_difference_pay(betValue);
+                            }
+                            {# TODO text midfield detailing action from computer #}
+                        };
 
                 </script>
             </div>
@@ -167,8 +211,8 @@
                     const checkButton = document.getElementById("checkButton");
 
                     checkButton.onclick = function() {
-                    {#    if there's nothing to pay #}
-
+                        do_game_phase();
+                        {# todo if can't check#}
                     }
                 </script>
             </p>
@@ -319,7 +363,6 @@
                     }
                 }
             }
-
         }
     </script>
     </body>
