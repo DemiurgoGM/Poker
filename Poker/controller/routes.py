@@ -6,7 +6,8 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_user, current_user, logout_user
 
 from Poker.controller import app, db, bcrypt
-from Poker.models.Deck import Deck, compare_hands, Hand
+from Poker.models.CompareHandsFuncs import compare_hands
+from Poker.models.Deck import Deck, Hand
 from Poker.models.dbModel import User
 
 # Deck is a global variable
