@@ -75,11 +75,21 @@ class Hand:
 
     def setBestHand(self):
         # assuming more than 5 cards hand, get all 5 cards hand and decides the best one
-        all_hands = list(combinations(self.hand, 5))
+        all_hands = list(map(sorted, map(list, combinations(self.hand, 5)))) # all_hands = list(combinations(self.hand, 5)); all_hands = list(map(list, all_hands)); all_hands = list(map(sorted, all_hands))
         best_hand = all_hands[0]
         for var_hand in all_hands[1:]:
             best_hand = var_hand if compare_hands(best_hand, var_hand) == var_hand else best_hand
         self.hand = best_hand
+
+    def this_hand(self):
+        self.hand.sort()
+        return self.hand
+
+    def __getitem__(self, item):
+        return self.hand[item]
+
+    def __setitem__(self, key, value):
+        self.hand[key] = value
 
 
 class Deck:

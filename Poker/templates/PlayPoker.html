@@ -25,6 +25,7 @@
                 <input type="hidden" value="{{ info }}" name="info">
                 <input type="hidden" value="{{ computer_money }}" name="computer_money" id="computer_money_input">
                 <input type="hidden" value="{{ money }}" name="money" id="player_money_input">
+                <input type="submit" value="Reload" id="ReloadButton" style="display: none;">
                 <input type="submit" value="Fold" id="FoldButton" class="playerActionButton">
                 <script>
                     const FoldButton = document.getElementById("FoldButton");
@@ -48,16 +49,19 @@
                     const playertextmoney = document.getElementById("playertextmoney");
                     const playermoneyinput = document.getElementById("player_money_input");
                     const computermoneyinput = document.getElementById("computer_money_input");
+                    const reloadButton = document.getElementById("ReloadButton");
                     let current_round = {{ info['round'] | safe | int }};
                     let current_blind = {{ info['blind'] | safe |  int }};
                     let player_money = {{ money | safe |  int}};
                     let computer_money = {{ computer_money | safe |  int }};
                     let pot = 0;
                     let game_phase = "start";
-                    let winner = {{ winner | safe | tojson |  int }};
+                    let winner = {{ winner | safe |  int }};
                     let flop = {{ flop | safe | tojson | string }};
                     let turn = {{ turn | safe | tojson | string }};
                     let river = {{ river | safe | tojson | string }};
+                    let player_hand = {{ player_hand | safe | tojson | string }};
+                    let computer_hand = {{ computer_hand | safe | tojson | string }};
 
                     {# Slider numberBox relationship #}
                     slider.oninput = function() {
@@ -143,65 +147,117 @@
                     }
 
                     function do_flop() {
-                        {# todo #}
                         midfield.innerHTML += "The flop is:<br>";
                         midfield.innerHTML += flop;
                         game_phase = "turn";
                     }
 
                     function do_turn() {
-                        console.log("do_turn");
+                        midfield.innerHTML += "The turn is:<br>";
+                        midfield.innerHTML += turn + "<br>";
                         game_phase = "river";
                     }
 
                     function do_river() {
-                        console.log("do_river");
+                        midfield.innerHTML += "The river is:<br>";
+                        midfield.innerHTML += river + "<br>";
                         game_phase = "end";
                     }
 
-                    function do_start() {
-                        midfield.innerHTML += "Player checks<br>";
-                        {# todo computer action #}
-                        midfield.innerHTML += "Computer checks<br>";
-                        game_phase = "flop";
+                    function do_endGame() {
+                        game_phase = "error";
+                        midfield.innerHTML += "The player's hand is:<br>";
+                        midfield.innerHTML += player_hand + "<br>";
+                        midfield.innerHTML += "The computer's hand is:<br>";
+                        midfield.innerHTML += computer_hand + "<br>";
+                        midfield.innerHTML += "The winner is...<br>";
+                        switch(winner) {
+                            case 1:
+                                {# player #}
+                                midfield.innerHTML += "The Player!<br>";
+                                midfield.innerHTML += "You won a pot of $" + pot + ".<br>";
+                                sum_player_money(pot);
+                                pot = 0;
+                                midfield.innerHTML += "Another game will start soon.<br>";
+                                setTimeout(function() {
+                                    reloadButton.click();
+                                }, 3000);
+                                return false;
+                            case 2:
+                                {# computer #}
+                                midfield.innerHTML += "The Computer!<br>";
+                                midfield.innerHTML += "The Computer won a pot of $" + pot + ".<br>";
+                                sum_computer_money(pot);
+                                pot = 0;
+                                midfield.innerHTML += "Another game will start soon.<br>";
+                                setTimeout(function() {
+                                    reloadButton.click();
+                                }, 3000);
+                                return false;
+                            case 3:
+                                {# tie #}
+                                midfield.innerHTML += "It's a tie!<br>";
+                                midfield.innerHTML += "A pot of $" + pot + " will be shared among you.<br>";
+                                sum_player_money(Math.floor(pot/2));
+                                sum_computer_money(Math.floor(pot/2));
+                                pot = 0;
+                                midfield.innerHTML += "Another game will start soon.<br>";
+                                setTimeout(function() {
+                                    reloadButton.click();
+                                }, 3000);
+                                return false;
+                            default:
+                                {# error #}
+                                midfield.innerHTML += "There has been a error.<br>";
+                                midfield.innerHTML += "You'll be redirected to the front page.<br>";
+                                pot = 0;
+                               setTimeout(function() {
+                                    window.location.replace('/');
+                                }, 3000);
+                                return false;
+                        }
                     }
 
                     function do_game_phase() {
-                            {# todo #}
-                            switch (game_phase) {
-                                case "start":
-                                    do_start();
-                                case "flop":
-                                    do_flop();
-                                    break;
-                                case "turn":
-                                    do_turn();
-                                    break;
-                                case "river":
-                                    do_river();
-                                    break;
-                                default:
-                                    return;
-                            }
+                        switch (game_phase) {
+                            case "flop":
+                                do_flop();
+                                break;
+                            case "turn":
+                                do_turn();
+                                break;
+                            case "river":
+                                do_river();
+                                break;
+                            case "end":
+                                do_endGame();
+                                break;
+                            default:
+                                window.location.replace('/');
+                                return false;
                         }
+                    }
 
                     {# Bet window #}
                     betButton.onclick = function () {
-                            const betValue = Number(document.getElementById("BettingRange").value);
+                        const betValue = Number(document.getElementById("BettingRange").value);
+                        pot += betValue;
+                        {# Place bet #}
+                        reduce_player_money(betValue);
+                        midfield.innerHTML += "The player bets " + betValue + ".<br>";
+                        midfield.innerHTML += "Now the pot is: " + pot + ".<br>";
+                        {# TODO computer action interface action game follow-up  #}
+                        {# computer will always check/pay until IA is implemented #}
+                        if(computer_money >= betValue) {
                             pot += betValue;
-                            {# Place bet #}
-                            reduce_player_money(betValue);
-                            {# TODO text midfield detailing action #}
-                            {# TODO computer action interface action game follow-up  #}
-                            {# computer will always check/pay until IA is implemented #}
-                            if(computer_money >= betValue) {
-                                pot += betValue;
-                                reduce_computer_money(betValue);
-                            } else {
-                                computer_all_in_difference_pay(betValue);
-                            }
-                            {# TODO text midfield detailing action from computer #}
-                        };
+                            reduce_computer_money(betValue);
+                        } else {
+                            computer_all_in_difference_pay(betValue);
+                        }
+                        midfield.innerHTML += "The computer payed the bet.<br>";
+                        midfield.innerHTML += "Now the pot is: " + pot + ".<br>";
+                        do_game_phase();
+                    };
 
                 </script>
             </div>
@@ -211,8 +267,10 @@
                     const checkButton = document.getElementById("checkButton");
 
                     checkButton.onclick = function() {
+                        midfield.innerHTML += "Player checks.<br>";
+                        {# todo computer action #}
+                        midfield.innerHTML += "Computer checks.<br>";
                         do_game_phase();
-                        {# todo if can't check#}
                     }
                 </script>
             </p>
@@ -364,6 +422,7 @@
                 }
             }
         }
+        game_phase = "flop";
     </script>
     </body>
 </html>

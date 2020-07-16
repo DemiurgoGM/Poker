@@ -1,8 +1,6 @@
 ->make a functional poker game
     ->client-side
-        ->Working on Bet button
-        ->check
-        ->game finish
+        ->make game work for all computer choices
 ->make profile about page
     ->win rate
     ->how much was won/lost (savings)

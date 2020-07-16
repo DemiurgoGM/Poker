@@ -121,26 +121,24 @@ def getFullHouseTwoCard(hand):  # if the hand received is ordered, use this
 
 
 def isFlush(hand):
-    counter = 0
     first_card = hand[0]
     for card in hand[1:]:
         if card.suit == first_card.suit:
-            counter = counter + 1
+            continue
         else:
             return False
-    return counter == 4
+    return True
 
 
 def isStraight(hand):  # if the hand received is ordered, use this
-    counter = 0
     first_card_value = hand[0].value
     for card in hand[1:]:
-        if card.value == first_card_value + 1 or \
-                (card.value == 13 and hand[0].value == 1) or \
-                (card.value == 10 and first_card_value == 1):
-            counter = counter + 1
-        first_card_value = card.value
-    return counter == 4
+        if card.value == first_card_value + 1 or (card.value == 10 and first_card_value == 1):
+            first_card_value = card.value
+            continue
+        else:
+            return False
+    return True
 
 
 # def isStraight(hand):  # if the hand received isn't ordered, use this instead
@@ -342,10 +340,6 @@ def compare_hands_values(hand_one, hand_two):  # assuming all different cards
 
 
 def compare_hands(hand_one, hand_two):
-    hand_one = list(hand_one)
-    hand_two = list(hand_two)
-    hand_one.sort()
-    hand_two.sort()
     if isStaightFlush(hand_one):
         if isStaightFlush(hand_two):
             return compare_hands_values(hand_one, hand_two)
@@ -496,4 +490,3 @@ def compare_hands(hand_one, hand_two):
         return hand_two
     else:  # Bigger kicker wins, if equals see other big card...
         return compare_hands_values(hand_one, hand_two)
-

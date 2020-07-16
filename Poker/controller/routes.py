@@ -71,11 +71,11 @@ def Play_Poker_Form_work(form):
     player_hand.setBestHand()
     computer_hand.setBestHand()
 
-    compared_hands = compare_hands(player_hand.hand, computer_hand.hand)
-    if compared_hands == player_hand.hand:
+    compared_hands = compare_hands(player_hand.this_hand(), computer_hand.this_hand())
+    if compared_hands == player_hand.this_hand():
         # player wins
         winner = 1
-    elif compared_hands == computer_hand.hand:
+    elif compared_hands == computer_hand.this_hand():
         # computer wins
         winner = 2
     else:
