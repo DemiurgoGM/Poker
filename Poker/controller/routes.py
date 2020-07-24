@@ -56,21 +56,33 @@ def play_poker():
 
 def Play_Poker_Form_work(form):
 
+    # getting computer money
     computer_money = int(form.get('computer_money')) if form.get('computer_money') else int(form.get('money'))
 
+    # suffling the deck
     for _ in range(3):
         shuffle(deck.cards_list)
 
-    player_hand = Hand(deck[0], deck[1])
-    computer_hand = Hand(deck[2], deck[3])
+    # Setting the hands
+    player_hand = Hand(deck.pop(), deck.pop())
+    computer_hand = Hand(deck.pop(), deck.pop())
     table_hand = deck.get_n_cards(5)
+
+    # Readding the cards to the deck
+    deck.addCard(player_hand.this_hand()[0], player_hand.this_hand()[1],
+                 computer_hand.this_hand()[0], computer_hand.this_hand()[1])
+
+    # Adding the table's hand to the players
     for card in table_hand:
         player_hand.addCard(card)
         computer_hand.addCard(card)
+        deck.addCard(card)   # Readding the cards to the deck
 
+    # Algorithm to find the best hand of the players
     player_hand.setBestHand()
     computer_hand.setBestHand()
 
+    # finding who won
     compared_hands = compare_hands(player_hand.this_hand(), computer_hand.this_hand())
     if compared_hands == player_hand.this_hand():
         # player wins
@@ -82,13 +94,14 @@ def Play_Poker_Form_work(form):
         # tie
         winner = 3
 
+    # String variable of the table
     flop = ''
     for i in range(3):
         flop = flop + str(table_hand[i]) + '<br>'
     # turn = table_hand[3]
     # river = table_hand[4]
     if form.get('info'):
-        info = literal_eval(form.get('info'))
+        info = literal_eval(form.get('info'))  # String to dictionary
         info['round'] = int(info['round']) + 1
         info['blind'] = int(info['blind']) if int(info['round']) % 10 != 0 else int(info['blind']) + 100
         return render_template('PlayPoker.html',
