@@ -1,6 +1,7 @@
 ->make a functional poker game
     ->client-side
         ->make game work for all computer choices
+        -> refactor to use images instead
 ->make profile about page
     ->win rate
     ->how much was won/lost (savings)

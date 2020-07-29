@@ -137,6 +137,65 @@
                         midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
                     }
 
+                    function basicComputerChoice(bet=0) {
+                        const computerChoice = computer_choices.random();
+                        switch (computerChoice) {
+                            case "Fold":
+                                midfield.innerHTML += "The computer folded.<br>";
+                                midfield.innerHTML += "Another game will start soon.<br>";
+                                midfield.innerHTML += "The player won a pot of $" + pot +".<br>";
+                                sum_player_money(pot);
+                                pot = 0;
+                                setTimeout(function() {
+                                    reloadButton.click();
+                                }, 5000);
+                                return false;
+                            case "Check":
+                                {# call #}
+                                if(bet > 0) {
+                                    if(computer_money >= bet) {
+                                        midfield.innerHTML += "The computer called the bet.<br>";
+                                        pot += bet;
+                                        reduce_computer_money(bet);
+                                        midfield.innerHTML += "Now the pot is $" + pot + ".<br>";
+                                    } else {
+                                        midfield.innerHTML += "The computer called the bet and went all in.<br>";
+                                        computer_all_in_difference_pay(bet);
+                                        midfield.innerHTML += "Now the pot is $" + pot + ".<br>";
+                                    }
+                                } else {
+                                    midfield.innerHTML += "The computer checks.<br>";
+                                }
+                                break;
+                            case "Raise":
+                                const actual_bet = bet - computer_bet;
+                                const possible_raise = actual_bet + current_blind * 2;
+                                if(computer_money >= possible_raise) {
+                                    midfield.innerHTML += "Computer raised 2 times the blind.<br>";
+                                    pot += possible_raise;
+                                    computer_bet = possible_raise;
+                                    reduce_computer_money(possible_raise);
+                                } else if(computer_money > actual_bet) {
+                                    midfield.innerHTML += "Computer Re-raised and went all in.<br>";
+                                    pot += computer_money;
+                                    computer_bet = computer_money;
+                                    reduce_computer_money(computer_money);
+                                } else {
+                                    computer_all_in_difference_pay(actual_bet);
+                                    midfield.innerHTML += "The computer called the bet and went all in.<br>";
+                                }
+                                midfield.innerHTML += "The pot is now $" + pot +".<br>";
+                                Make_Call_Button();
+                                break;
+                            default:
+                                midfield.innerHTML += "There's been an error. You'll be redirected to the homepage<br>";
+                                setTimeout(function() {
+                                    window.location.replace('/');
+                                }, 3000);
+                                return false;
+                        }
+                    }
+
                     function computer_all_in_difference_pay(bet) {
                         const pay_difference = bet - computer_money;
                         pot = pot - pay_difference;
@@ -151,24 +210,6 @@
                         sum_computer_money(pay_difference);
                         pot += player_money;
                         reduce_player_money(player_money);
-                    }
-
-                    function do_flop() {
-                        midfield.innerHTML += "The flop is:<br>";
-                        midfield.innerHTML += flop;
-                        game_phase = "turn";
-                    }
-
-                    function do_turn() {
-                        midfield.innerHTML += "The turn is:<br>";
-                        midfield.innerHTML += turn + "<br>";
-                        game_phase = "river";
-                    }
-
-                    function do_river() {
-                        midfield.innerHTML += "The river is:<br>";
-                        midfield.innerHTML += river + "<br>";
-                        game_phase = "end";
                     }
 
                     function do_endGame() {
@@ -228,13 +269,19 @@
                     function do_game_phase() {
                         switch (game_phase) {
                             case "flop":
-                                do_flop();
+                                midfield.innerHTML += "The flop is:<br>";
+                                midfield.innerHTML += flop;
+                                game_phase = "turn";
                                 break;
                             case "turn":
-                                do_turn();
+                                midfield.innerHTML += "The turn is:<br>";
+                                midfield.innerHTML += turn + "<br>";
+                                game_phase = "river";
                                 break;
                             case "river":
-                                do_river();
+                                midfield.innerHTML += "The river is:<br>";
+                                midfield.innerHTML += river + "<br>";
+                                game_phase = "end";
                                 break;
                             case "end":
                                 do_endGame();
@@ -247,63 +294,73 @@
 
                     {# Bet window #}
                     betButton.onclick = function () {
-                        const betValue = Number(document.getElementById("BettingRange").value) - computer_bet;
-                        pot += betValue;
-                        {# Place bet #}
-                        reduce_player_money(betValue);
-                        midfield.innerHTML += "The player bets " + betValue + ".<br>";
-                        midfield.innerHTML += "Now the pot is: " + pot + ".<br>";
-                        const computerChoice = computer_choices.random();
-                        switch (computerChoice) {
-                            case "Fold":
-                                midfield.innerHTML += "The computer folded.<br>";
-                                midfield.innerHTML += "Another game will start soon.<br>";
-                                midfield.innerHTML += "The player won a pot of $" + pot +".<br>";
-                                sum_player_money(pot);
-                                pot = 0;
-                                setTimeout(function() {
-                                    reloadButton.click();
-                                }, 5000);
-                                return false;
-                            case "Check": {# call #}
-                                if(computer_money >= betValue) {
-                                    pot += betValue;
-                                    reduce_computer_money(betValue);
-                                } else {
-                                    computer_all_in_difference_pay(betValue);
-                                }
-                                midfield.innerHTML += "The computer called the bet.<br>";
-                                midfield.innerHTML += "Now the pot is: " + pot + ".<br>";
-                                do_game_phase();
-                                break;
-                            case "Raise":
-                                {# todo #}
-                                const possible_raise = betValue + current_blind * 2;
-                                if(computer_money >= possible_raise) {
-                                    midfield.innerHTML += "Computer raised 2 times the blind.<br>";
-                                    pot += possible_raise;
-                                    computer_bet = possible_raise;
-                                    reduce_computer_money(possible_raise);
-                                    midfield.innerHTML += "The pot is now $" + pot +".<br>";
-                                    Make_Call_Button();
-                                } else if(computer_money > 0) {
-                                    midfield.innerHTML += "Computer went all in<br>";
-                                    pot += computer_money;
-                                    computer_bet = computer_money;
-                                    reduce_computer_money(computer_money);
-                                    midfield.innerHTML += "The pot is now $" + pot +".<br>";
-                                    Make_Call_Button();
-                                } else {
-                                    midfield.innerHTML += "The computer is already all in.<br>";
+                        if(computer_bet > player_money) {
+                            {# if computer bet is higher than the player's money #}
+                            {# equivalent to a call #}
+                            player_all_in_difference_pay(computer_bet);
+                            computer_bet = 0;
+                            midfield.innerHTML += "The player called the bet.<br>";
+                            midfield.innerHTML += "Now the pot is $" + pot + ".<br>";
+                            do_game_phase();
+                        } else {
+                            {# Place bet #}
+                            const betValue = Number(document.getElementById("BettingRange").value);
+                            pot += betValue;
+                            reduce_player_money(betValue);
+                            midfield.innerHTML += "The player bets " + betValue + ".<br>";
+                            midfield.innerHTML += "Now the pot is: " + pot + ".<br>";
+                            {# computer action #}
+                            const computerChoice = computer_choices.random();
+                            const actual_bet = betValue - computer_bet;
+                            computer_bet = 0;
+                            switch (computerChoice) {
+                                case "Fold":
+                                    midfield.innerHTML += "The computer folded.<br>";
+                                    midfield.innerHTML += "Another game will start soon.<br>";
+                                    midfield.innerHTML += "The player won a pot of $" + pot +".<br>";
+                                    sum_player_money(pot);
+                                    pot = 0;
+                                    setTimeout(function() {
+                                        reloadButton.click();
+                                    }, 5000);
+                                    return false;
+                                case "Check": {# call #}
+                                    if(computer_money >= actual_bet) {
+                                        pot += actual_bet;
+                                        reduce_computer_money(actual_bet);
+                                    } else {
+                                        computer_all_in_difference_pay(actual_bet);
+                                    }
+                                    midfield.innerHTML += "The computer called the bet.<br>";
+                                    midfield.innerHTML += "Now the pot is: " + pot + ".<br>";
                                     do_game_phase();
-                                }
-                                break;
-                            default:
-                                midfield.innerHTML += "There's been an error. You'll be redirected to the homepage<br>";
-                                setTimeout(function() {
-                                    window.location.replace('/');
-                                }, 3000);
-                                return false;
+                                    break;
+                                case "Raise":
+                                    const possible_raise = actual_bet + current_blind * 2;
+                                    if(computer_money >= possible_raise) {
+                                        midfield.innerHTML += "Computer raised 2 times the blind.<br>";
+                                        pot += possible_raise;
+                                        computer_bet = possible_raise;
+                                        reduce_computer_money(possible_raise);
+                                    } else if(computer_money > actual_bet) {
+                                        midfield.innerHTML += "Computer Re-raised and went all in.<br>";
+                                        pot += computer_money;
+                                        computer_bet = computer_money;
+                                        reduce_computer_money(computer_money);
+                                    } else {
+                                        computer_all_in_difference_pay(actual_bet);
+                                        midfield.innerHTML += "The computer called the bet and went all in.<br>";
+                                    }
+                                    midfield.innerHTML += "The pot is now $" + pot +".<br>";
+                                    Make_Call_Button();
+                                    break;
+                                default:
+                                    midfield.innerHTML += "There's been an error. You'll be redirected to the homepage<br>";
+                                    setTimeout(function() {
+                                        window.location.replace('/');
+                                    }, 3000);
+                                    return false;
+                            }
                         }
                     };
 
@@ -314,26 +371,36 @@
                 <script>
                     const checkButton = document.getElementById("checkButton");
 
-                    function Make_Call_Button() {
+                    function Make_Call_Button(bet=0) {
                         {# If the computer bets, call this function #}
                         checkButton.value = "Call";
-                        {# todo #}
-                        if(Number(slider.max) >= computer_bet){
-
-                        } else {
-
+                        if(bet > 0 && computer_bet === 0){
+                            computer_bet = bet;
                         }
+                        const minimum_bet = Number(computer_bet) + 1;
+                        const isMinimum_betLowerPlayerMoney = minimum_bet < Number(player_money);
+                        slider.min = isMinimum_betLowerPlayerMoney ? minimum_bet : Number(player_money);
+                        slider.max = Number(player_money);
+                        slider.value = Number(slider.min);
+                        numberBox.min = isMinimum_betLowerPlayerMoney ? minimum_bet : Number(player_money);
+                        numberBox.max = Number(player_money);
+                        numberBox.value = Number(slider.value);
                     }
 
                     checkButton.onclick = function() {
                         switch (checkButton.value) {
                             case "Call":
-                                {# todo #}
+                                midfield.innerHTML += "The player called the bet.<br>";
                                 if(player_money > computer_bet) {
-
+                                    pot += computer_bet;
+                                    reduce_player_money(computer_bet);
                                 } else {
-
+                                    player_all_in_difference_pay(computer_bet);
                                 }
+                                computer_bet = 0;
+                                midfield.innerHTML += "Now the pot is $" + pot + ".<br>";
+                                do_game_phase();
+                                checkButton.value = "Check";
                                 break;
                             case "Check":
                                 midfield.innerHTML += "Player checks.<br>";
@@ -426,13 +493,8 @@
                     computerPayed("small blind", small_blind);
                         {# Computer action #}
                     betValue = small_blind;
-                        {# for now he'll always pay #}
-                    if(computer_money > betValue) {
-                        computerPayed("full blind", betValue);
-                    } else {
-                        computerPayed("full blind, going all in", computer_money);
-                    }
-
+                        {# random action for the computer #}
+                    basicComputerChoice(betValue);
                 } else {
                     computer_all_in_difference_pay(pot);
                     midfield.innerHTML += "The computer went all in.<br>";
@@ -453,7 +515,7 @@
                         computerPayed("small blind", small_blind);
 
                         {# computer play / for now always pays #}
-                        computerPayed("remaining value", pay_difference);
+                        basicComputerChoice(pay_difference);
                     } else {
                         computer_all_in_difference_pay(pot);
                         midfield.innerHTML += "The computer went all in.<br>";
@@ -464,8 +526,7 @@
                 } else {
                     if(computer_money >= pot) {
                         computerPayed("player's all in", pot);
-                        {# computer action/ for now always check #}
-                        {#midfield.innerHTML += "The computer checks.<br>";#}
+                        {# computer action/ no reason to raise or fold #}
                     } else {
                         computer_all_in_difference_pay(pot);
                         midfield.innerHTML += "The computer went all in.<br>";
@@ -491,8 +552,8 @@
                     midfield.innerHTML += "The player payed the small blind.<br>";
                     midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
 
-
                     {# player plays #}
+                    Make_Call_Button(small_blind);
                 } else {
                     midfield.innerHTML += "The player went all in.<br>";
                     midfield.innerHTML += "Part of the bet was returned to the computer.<br>";
@@ -514,6 +575,7 @@
                         midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
 
                         {# player plays #}
+                        Make_Call_Button(small_blind);
                     } else {
                         pay_difference = pot - player_money;
                         player_all_in_difference_pay(pot);
