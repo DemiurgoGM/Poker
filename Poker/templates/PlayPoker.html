@@ -137,6 +137,20 @@
                         midfield.innerHTML += "Now the current pot is: " + pot + ".<br>";
                     }
 
+                    function fuel_player_computer_money() {
+                        if(player_money === 0){
+                            midfield.innerHTML += "The player ran out of money.<br>";
+                            midfield.innerHTML += "Now the game will restart and the player will have $" + Number(current_blind * 15) + ".<br>";
+                            sum_player_money(Number(current_blind * 15));
+                        }
+                        if(computer_money === 0){
+                            midfield.innerHTML += "The computer ran out of money.<br>";
+                            midfield.innerHTML += "Now the game will restart and the computer will have $" + Number(current_blind * 15) + ".<br>";
+                            sum_computer_money(Number(current_blind * 15));
+
+                        }
+                    }
+
                     function basicComputerChoice(bet=0) {
                         const computerChoice = computer_choices.random();
                         switch (computerChoice) {
@@ -146,6 +160,7 @@
                                 midfield.innerHTML += "The player won a pot of $" + pot +".<br>";
                                 sum_player_money(pot);
                                 pot = 0;
+                                fuel_player_computer_money();
                                 setTimeout(function() {
                                     reloadButton.click();
                                 }, 5000);
@@ -226,6 +241,7 @@
                                 midfield.innerHTML += "You won a pot of $" + pot + ".<br>";
                                 sum_player_money(pot);
                                 pot = 0;
+                                fuel_player_computer_money();
                                 midfield.innerHTML += "Another game will start soon.<br>";
                                 setTimeout(function() {
                                     reloadButton.click();
@@ -237,6 +253,7 @@
                                 midfield.innerHTML += "The Computer won a pot of $" + pot + ".<br>";
                                 sum_computer_money(pot);
                                 pot = 0;
+                                fuel_player_computer_money();
                                 midfield.innerHTML += "Another game will start soon.<br>";
                                 setTimeout(function() {
                                     reloadButton.click();
@@ -320,6 +337,7 @@
                                     midfield.innerHTML += "The player won a pot of $" + pot +".<br>";
                                     sum_player_money(pot);
                                     pot = 0;
+                                    fuel_player_computer_money();
                                     setTimeout(function() {
                                         reloadButton.click();
                                     }, 5000);
@@ -412,6 +430,7 @@
                                         midfield.innerHTML += "The player won a pot of $" + pot +".<br>";
                                         sum_player_money(pot);
                                         pot = 0;
+                                        fuel_player_computer_money();
                                         setTimeout(function() {
                                             reloadButton.click();
                                         }, 5000);
