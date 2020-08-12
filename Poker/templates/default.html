@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/defaultstyle.css">
         <script type="module" src="../static/defaultPasswordCheck.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     </head>
 
     <body>
@@ -23,9 +24,18 @@
                      <label for="moneylogin"><b>Quantity: </b></label>
                      <input type="number" id="moneylogin" max="10000" min="1000" value="5000" name="money" required>
                      <br><br>
+                     <label for="typePvC"><b>Player vs Computer: </b></label>
+                     <input type="radio" id="typePvC" name="GameType" checked value="typePvC">
+                     <br>
+                     <label for="typePvP"><b>Player vs Player: </b></label>
+                     <input type="radio" id="typePvP" name="GameType" value="typePvP">
+                     <label for="roomNumber"  id="labelRoomNumber"><b>Room: </b></label>
+                     <input type="number" placeholder="Room Number" name="roomNumber" id="roomNumber">
+                     <h5 id="roomNumberh5Note"></h5>
+                     <br><br>
                      <input type="hidden" value="0" name="round">
                      <input type="hidden" value="0" name="blind">
-                     <input type="submit" value="Play Poker!" id="loginsubmit">
+                     <input type="submit" value="Play Poker!" id="loginsubmit" onclick="submitForm()">
                  </fieldset>
              </form>
             <form action="{{ url_for('homepage') }}" method="post" id="formDefaultSignin">
@@ -63,5 +73,39 @@
                 }
             </script>
         {% endif %}
+        <script>
+            const submitButtonPlayPoker = document.getElementById("loginsubmit");
+            const formPlayPoker = document.getElementById("formDefaultLogin");
+            const radiotypePvP = document.getElementById("typePvP");
+            const radiotypePvC = document.getElementById("typePvC");
+            const roomNumberh5Note = document.getElementById("roomNumberh5Note");
+            const roomNumberlabel = document.getElementById("labelRoomNumber");
+            const roomNumbernumber = document.getElementById("roomNumber");
+
+            radiotypePvP.onclick = function () {
+                {# make RoomNumber Visible #}
+                roomNumberh5Note.innerHTML = "<b>Note:</b> If no number is included, new room is created.";
+                roomNumberlabel.style.display = "inline";
+                roomNumbernumber.style.display = "inline";
+            };
+
+            radiotypePvC.onclick = function () {
+                {# make RoomNumber Unvisible #}
+                roomNumberh5Note.innerHTML = "";
+                roomNumberlabel.style.display = "none";
+                roomNumbernumber.style.display = "none";
+                roomNumbernumber.value = "";
+
+            };
+
+            function submitForm() {
+                if(radiotypePvP.checked) {
+                    formPlayPoker.action = "{{ url_for('PlayerVsPlayer') }}";
+                } else {
+                    formPlayPoker.action = "{{ url_for('play_poker') }}";
+                }
+            }
+
+        </script>
     </body>
 </html>

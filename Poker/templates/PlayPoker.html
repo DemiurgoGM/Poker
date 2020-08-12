@@ -5,6 +5,7 @@
         <title>Play Poker!</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="../static/PlayPokerStyle.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     </head>
 
     <body>
@@ -231,6 +232,8 @@
                         game_phase = "error";
                         midfield.innerHTML += "The player's hand is:<br>";
                         midfield.innerHTML += player_hand + "<br>";
+                        midfield.innerHTML += "The computer's first cards are:<br>";
+                        midfield.innerHTML += "{{ computer_hand.get_two_cards() }}<br>";
                         midfield.innerHTML += "The computer's hand is:<br>";
                         midfield.innerHTML += computer_hand + "<br>";
                         midfield.innerHTML += "The winner is...<br>";
@@ -289,16 +292,24 @@
                                 midfield.innerHTML += "The flop is:<br>";
                                 midfield.innerHTML += flop;
                                 game_phase = "turn";
-                                break;
+                                if(computer_money !== 0 && player_money !== 0){
+                                    break;
+                                }
                             case "turn":
                                 midfield.innerHTML += "The turn is:<br>";
                                 midfield.innerHTML += turn + "<br>";
                                 game_phase = "river";
+                                if(computer_money !== 0 && player_money !== 0){
+                                    break;
+                                }
                                 break;
                             case "river":
                                 midfield.innerHTML += "The river is:<br>";
                                 midfield.innerHTML += river + "<br>";
                                 game_phase = "end";
+                                if(computer_money !== 0 && player_money !== 0){
+                                    break;
+                                }
                                 break;
                             case "end":
                                 do_endGame();

@@ -1,5 +1,5 @@
-from Poker.controller import app
+from Poker.controller import app, socket
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socket.run(app, debug=True)

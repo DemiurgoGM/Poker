@@ -4,8 +4,9 @@ from random import shuffle
 
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, current_user, logout_user
+from flask_socketio import emit
 
-from Poker.controller import app, db, bcrypt
+from Poker.controller import app, db, bcrypt, socket
 from Poker.models.CompareHandsFuncs import compare_hands
 from Poker.models.Deck import Deck, Hand
 from Poker.models.dbModel import User
@@ -41,9 +42,11 @@ def homepage():
 def play_poker():
     if request.form:
         form = request.form
+        # if the player is already playing, continue
         if current_user.is_active:
             return Play_Poker_Form_work(form)
         else:
+            # if he's entering the game now
             user = User.query.filter_by(username=form.get('user')).first()
             if user and bcrypt.check_password_hash(user.password, form.get('password')):
                 login_user(user, remember=False)
@@ -122,7 +125,23 @@ def Play_Poker_Form_work(form):
                                flop=flop, turn=table_hand[3], river=table_hand[4])
 
 
+@app.route('/PvP', methods=['GET', 'POST'])
+def PlayerVsPlayer():
+    if request.form:
+        print(request.form)
+        return render_template('PvP.html')
+    else:
+        return redirect(url_for('homepage', message='Something went wrong, please try again.'))
+
+
+@socket.on('connect')
+def handle_Test():
+    print('message received')
+    emit('message', 'message')
+
+
 @app.route('/logOut')
 def logouttoHomePage():
     logout_user()
     return redirect(url_for('homepage'))
+

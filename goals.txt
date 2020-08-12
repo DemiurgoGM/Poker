@@ -1,8 +1,8 @@
-->make a functional poker game
-    ->client-side
-        ->make game work for all computer choices
-        ->refactor to use images instead
-        ->make button to restart the game instead of a timeout
+
+->make PvP
+->client-side
+    ->refactor to use images instead
+    ->make button to restart the game instead of a timeout
 ->make profile about page
     ->win rate
     ->how much was won/lost (savings)

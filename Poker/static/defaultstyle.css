@@ -6,12 +6,13 @@ html {
 body {
     height: 100%;
     margin: 0;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    overflow: hidden;
+    overflow: paged-y-controls;
+    /*background: black;*/
     background: #355C7D;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to bottom, #C06C84, #6C5B7B, #355C7D);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to bottom, #C06C84, #6C5B7B, #355C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 #bodydivh1 {
@@ -22,13 +23,13 @@ body {
 }
 
 h1 {
-    padding-bottom: 2vw;
-    padding-top: 2vw;
-    padding-right: 2vw;
+    padding-bottom: 1vw;
+    padding-top: 1vw;
+    padding-right: 1vw;
     text-align: center;
 }
 
-a, label, legend, #confirmB, #passwordErrorText {
+a, label, legend, #confirmB, #passwordErrorText, #roomNumberh5Note {
     color: white;
     text-decoration: none;
 }
@@ -37,7 +38,7 @@ label, #confirmB {
     margin-left: 13.5em;
 }
 
-#passwordErrorText {
+#passwordErrorText, #roomNumberh5Note {
     margin-left: 15vw;
 }
 
@@ -62,11 +63,11 @@ a:hover{
 }
 
 fieldset {
-    margin-bottom: 3vw;
+    margin-bottom: 1vw;
 }
 
 #fieldsetDefaultLogin {
-    margin-bottom: 5vw;
+    margin-bottom: 3vw;
 }
 
 #username, #usernameSignin {
@@ -85,6 +86,18 @@ fieldset {
 
 #Emailsignin {
     margin-left: 2.4em;
+}
+
+#typePvP {
+    margin-left: 2.8em;
+}
+
+#roomNumber, #labelRoomNumber {
+    display: none;
+}
+
+#roomNumber {
+    margin-left: 2.9em;
 }
 
 #passwordsignin, #confirmpasswordsignin, #PasswordLogin {
